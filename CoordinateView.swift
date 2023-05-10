@@ -16,8 +16,8 @@ struct CoordinateView: View {
     
     var body: some View {
         Text("\(text)")
-          //  .frame(width: getButtonSize(), height: getButtonSize())
-            .frame(width: 37,height: 37)
+            .frame(width: getButtonSize(), height: getButtonSize())
+          //  .frame(width: 37,height: 37)
     }
     private func getButtonSize() -> CGFloat {
         let screenWidth = UIScreen.main.bounds.width
