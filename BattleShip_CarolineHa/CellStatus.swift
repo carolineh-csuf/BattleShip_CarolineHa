@@ -29,7 +29,16 @@ struct CellStatus {
         }
     }
     
+    enum ShipType {
+        case carrier;
+        case battleShip;
+        case cruiser;
+        case Destoyer;
+        case submarine
+    }
+    
     let cellType: CellType
     var isSelected: Bool
     var bgColor: Color
+    var shipType: ShipType?
 }
