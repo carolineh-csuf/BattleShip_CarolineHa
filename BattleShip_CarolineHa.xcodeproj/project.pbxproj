@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A19100A2A0CBB930054C25F /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1910092A0CBB930054C25F /* GameView.swift */; };
+		7A19100C2A0CC6FD0054C25F /* OpponentCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A19100B2A0CC6FD0054C25F /* OpponentCellView.swift */; };
 		7ACBF2502A0C3168005064D5 /* BattleShip_CarolineHaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACBF24F2A0C3168005064D5 /* BattleShip_CarolineHaApp.swift */; };
 		7ACBF2522A0C3168005064D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACBF2512A0C3168005064D5 /* ContentView.swift */; };
 		7ACBF2542A0C316A005064D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7ACBF2532A0C316A005064D5 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		7A1910092A0CBB930054C25F /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		7A19100B2A0CC6FD0054C25F /* OpponentCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentCellView.swift; sourceTree = "<group>"; };
 		7ACBF24C2A0C3167005064D5 /* BattleShip_CarolineHa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BattleShip_CarolineHa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ACBF24F2A0C3168005064D5 /* BattleShip_CarolineHaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BattleShip_CarolineHaApp.swift; sourceTree = "<group>"; };
 		7ACBF2512A0C3168005064D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				7ACBF2512A0C3168005064D5 /* ContentView.swift */,
 				7A1910092A0CBB930054C25F /* GameView.swift */,
 				7ACBF25D2A0C31DF005064D5 /* CellView.swift */,
+				7A19100B2A0CC6FD0054C25F /* OpponentCellView.swift */,
 				7ACBF25F2A0C3284005064D5 /* CellStatus.swift */,
 				7ACBF2532A0C316A005064D5 /* Assets.xcassets */,
 				7ACBF2552A0C316A005064D5 /* Preview Content */,
@@ -150,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ACBF2522A0C3168005064D5 /* ContentView.swift in Sources */,
+				7A19100C2A0CC6FD0054C25F /* OpponentCellView.swift in Sources */,
 				7ACBF2502A0C3168005064D5 /* BattleShip_CarolineHaApp.swift in Sources */,
 				7ACBF25E2A0C31DF005064D5 /* CellView.swift in Sources */,
 				7ACBF2622A0C40CD005064D5 /* CoordinateView.swift in Sources */,

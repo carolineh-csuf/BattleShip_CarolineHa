@@ -283,7 +283,7 @@ struct ContentView: View {
                     .padding()
                     Spacer()
 
-                    NavigationLink(destination: GameView()) {
+                    NavigationLink(destination: GameView(blockTextStruct: $blockTextStruct)) {
                         Text("Start Game")
                             .padding()
                     }
@@ -291,7 +291,8 @@ struct ContentView: View {
                 }
                 
             }
-//            .navigationTitle("BattleShip")
+           .navigationTitle("BattleShip")
+           .navigationBarTitleDisplayMode(.inline)
 //            .padding()
         }
         
