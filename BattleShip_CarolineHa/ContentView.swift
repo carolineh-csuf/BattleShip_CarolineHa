@@ -19,7 +19,7 @@ struct ContentView: View {
     
     // @Binding var blockTextStruct: [[CellStatus]]
     
-    @State var blockTextStruct:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .blue)]]
+    @State var blockTextStruct:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .blue, cellText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
@@ -33,7 +33,6 @@ struct ContentView: View {
     @State private var isAnimating3: Bool = false
     @State private var isAnimating2: Bool = false
     @State private var isAnimating1: Bool = false
-    //   @State private var isSelectedShip: Bool = false
     @State private var isHorizontal: Bool = false
     @State private var showAlert: Bool = false
     //    @State private var isToggleEnabled = false
@@ -138,7 +137,7 @@ struct ContentView: View {
                         }
                     }){
                         HStack{
-                            Text("Carrier: ")
+                            Text("AirCraft Carrier: ")
                             HStack(spacing:0){
                                 Image(systemName: "train.side.rear.car")
                                 Image(systemName: "train.side.middle.car")
@@ -218,6 +217,33 @@ struct ContentView: View {
                 }
                 .buttonStyle(BoldButtonStyle(isAnimating: isAnimating3))
                 .padding(.trailing)
+
+                Button(action: {
+                    withAnimation {
+                        isAnimating1.toggle()
+                        isAnimating5 = false
+                        isAnimating4 = false
+                        isAnimating3 = false
+                        isAnimating2 = false
+                        
+                        selectedShip = .submarine
+                        selectedShipSize = 3
+                        
+                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
+                    }
+                }){
+                    HStack {
+                        Text("Submarine size 3")
+                        HStack(spacing:0){
+                            Image(systemName: "train.side.rear.car")
+                            Image(systemName: "train.side.middle.car")
+                            Image(systemName: "train.side.front.car")
+                        }
+                    }
+                    .padding()
+                }
+                .buttonStyle(BoldButtonStyle(isAnimating: isAnimating1))
+                .padding(.trailing)
                 
                 Button(action: {
                     withAnimation {
@@ -243,32 +269,6 @@ struct ContentView: View {
                     .padding()
                 }
                 .buttonStyle(BoldButtonStyle(isAnimating: isAnimating2))
-                .padding(.trailing)
-                
-                Button(action: {
-                    withAnimation {
-                        isAnimating1.toggle()
-                        isAnimating5 = false
-                        isAnimating4 = false
-                        isAnimating3 = false
-                        isAnimating2 = false
-                        
-                        selectedShip = .submarine
-                        selectedShipSize = 1
-                        
-                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                    }
-                }){
-                    HStack {
-                        Text("Submarine size 1")
-                        HStack(spacing:0){
-                            // Image(systemName: "train.side.rear.car")
-                            Image(systemName: "train.side.front.car")
-                        }
-                    }
-                    .padding()
-                }
-                .buttonStyle(BoldButtonStyle(isAnimating: isAnimating1))
                 .padding(.trailing)
                 
                 Spacer()
@@ -307,7 +307,7 @@ struct ContentView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                var cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .blue)
+                var cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .blue, cellText: "")
                 row.append(cellStatus)
             }
             blockTextStruct.append(row)

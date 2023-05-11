@@ -37,8 +37,10 @@ struct CellStatus {
         case submarine
     }
     
+    
     let cellType: CellType
     var isSelected: Bool
     var bgColor: Color
     var shipType: ShipType?
+    var cellText: String
 }

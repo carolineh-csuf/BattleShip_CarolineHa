@@ -28,7 +28,7 @@ struct CellView: View {
     
     var body: some View {
         
-        Text("")
+        Text(blockState[row][col].cellText)
             .frame(width: getButtonSize(), height: getButtonSize())
             .background(blockState[row][col].bgColor)
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
