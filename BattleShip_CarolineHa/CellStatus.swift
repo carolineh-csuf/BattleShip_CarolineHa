@@ -30,4 +30,6 @@ struct CellStatus {
     }
     
     let cellType: CellType
+    var isSelected: Bool
+    var bgColor: Color
 }

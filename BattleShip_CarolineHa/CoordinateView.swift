@@ -21,9 +21,9 @@ struct CoordinateView: View {
     }
     private func getButtonSize() -> CGFloat {
         let screenWidth = UIScreen.main.bounds.width
-        print("screenWidth is : \(screenWidth)")
+    //    print("screenWidth is : \(screenWidth)")
         let size = (Int(screenWidth) - (2 * 10)) / (gridSize + 1)
-        print("buttonSize = \(size)")
+      //  print("buttonSize = \(size)")
         return CGFloat(size)
     }
 }

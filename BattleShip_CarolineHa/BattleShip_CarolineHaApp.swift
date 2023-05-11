@@ -9,10 +9,10 @@ import SwiftUI
 
 @main
 struct BattleShip_CarolineHaApp: App {
-    let cells:[[CellStatus]] = [[]]
+   // let cells:[[CellStatus]] = [[]]
     var body: some Scene {
         WindowGroup {
-            ContentView(blockTextStruct: .constant(cells))
+            ContentView()
         }
     }
 }
