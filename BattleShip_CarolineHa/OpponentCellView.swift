@@ -18,6 +18,7 @@ struct OpponentCellView: View {
     @Binding var shipType: CellStatus.ShipType!
     @Binding var currentPlayer: String
     @Binding var message: String
+    @Binding var isWaitingForAttack: Bool
 //    @Binding var isAnimating5: Bool
 //    @Binding var isAnimating4: Bool
 //    @Binding var isAnimating3: Bool
@@ -25,6 +26,7 @@ struct OpponentCellView: View {
 //    @Binding var isAnimating1: Bool
     
     @State private var isAttacked: Bool = false
+    @State private var showInvalidTapAlert: Bool = false
     
     var body: some View {
         Text(blockState[row][col].cellText)
@@ -33,6 +35,12 @@ struct OpponentCellView: View {
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
             .onTapGesture {
                 withAnimation {
+                    if isWaitingForAttack {
+                        showInvalidTapAlert = true
+                        return
+                    }
+                    
+                    
                     //set seletedBlock Index
                     selectedOpponentRow = row
                     selectedOpponentCol = col
@@ -48,12 +56,13 @@ struct OpponentCellView: View {
                     blockState[row][col].bgColor = .yellow
                     //blockState[row][col].cellText = "A"
                     
-                    message = "Attracking Opponent at Coordinate(x: \(selectedOpponentRow) ,y: \(selectedOpponentCol)"
+                  //  Character(UnicodeScalar(selectedOpponentRow + 65)!)
+                    
+                    message = "Attracking Opponent at  \(Character(UnicodeScalar(selectedOpponentRow + 65)!))\(selectedOpponentCol + 1)."
                     print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
                     
-                    
-                    for (row, rowBlock) in blockState.enumerated() {
-                        for (col, _) in rowBlock.enumerated() {
+                    for (_, rowBlock) in blockState.enumerated() {
+                        for (_, _) in rowBlock.enumerated() {
                             blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .pink
                             blockState[selectedOpponentRow][selectedOpponentCol].cellText = "A"
                         }
@@ -66,6 +75,11 @@ struct OpponentCellView: View {
             }
             .alert("You already attack this area.", isPresented: $isAttacked){
                 Button("OK") { isAttacked = false}
+            }
+            .alert("Please waiting for attack.", isPresented: $showInvalidTapAlert) {
+                Button("OK") {
+                    showInvalidTapAlert = false
+                }
             }
     }
     

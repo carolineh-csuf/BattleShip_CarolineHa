@@ -23,8 +23,10 @@ struct CellView: View {
     @Binding var isAnimating3: Bool
     @Binding var isAnimating2: Bool
     @Binding var isAnimating1: Bool
+    @Binding var isIntheGame: Bool
     
     @State private var showAlert: Bool = false
+    @State private var showInvalidTapAlert: Bool = false
     
     var body: some View {
         
@@ -34,6 +36,11 @@ struct CellView: View {
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
             .onTapGesture {
                 withAnimation {
+                    if isIntheGame {
+                        showInvalidTapAlert = true
+                        return
+                    }
+                    
                     //set seletedBlock Index
                     selectedRow = row
                     selectedCol = col
@@ -65,6 +72,11 @@ struct CellView: View {
             .alert("Invalid Placement", isPresented: $showAlert) {
                 Button("OK") {
                     showAlert = false
+                }
+            }
+            .alert("You are in the game, you can't change your board.", isPresented: $showInvalidTapAlert) {
+                Button("OK") {
+                    showInvalidTapAlert = false
                 }
             }
     }

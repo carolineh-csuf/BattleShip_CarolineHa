@@ -54,52 +54,58 @@ struct GameView: View {
     @State private var players = ["Player", "Opponent"]
     
     @State var currentPlayerIndex: Int = 0
-    @State var currentPlayer: String = "Player"
+    @State var currentPlayer: String = ""
     
+    @State var isIntheGame: Bool = false
+    @State var isWaitingForAttack: Bool = false
+    
+    
+    @State private var hitCountforCarrier: Int = 0
+    @State private var hitCountforBattleShip: Int = 0
+    @State private var hitCountforCruiser: Int = 0
+    @State private var hitCountforSubmarine: Int = 0
+    @State private var hitCountforDestroyer: Int = 0
+    @State private var showSunkShipAlert: Bool = false
+    @State private var sunkShipAlertText: String = ""
     
     var body: some View {
         
         NavigationView {
             VStack {
                 Section {
-                    Text("Current Player: \(currentPlayer)")
-//                        .onAppear {
-//                            if currentPlayer == "Opponent" {
-//                                delay(seconds: 2) {
-//                                    receiveOpponentAttack()
-//
-//                                    //give turn to player
-//                                    currentPlayer = "Player"
-//
-//                                }
-//                            }
-//                        }
+                    Text(currentPlayer == "Player" ? "Your turn" : "Waiting for Attack")
+                        .foregroundColor(.blue)
+                        .fontWeight(.heavy)
                         .onChange(of: currentPlayer) {newValue in
                             if newValue == "Opponent" {
+                                isWaitingForAttack = true
+                                
                                 delay(seconds: 2) {
                                     receiveOpponentAttack()
+                                    
+                                    currentPlayer = "Player"
+                                    isWaitingForAttack = false
                                 }
-                                
-                                currentPlayer = "Player"
                             }
                         }
-
+                    // .animation(Animation.easeInOut(duration: 1.0).repeatForever())
+                    
                     Text("\(message)")
-                        .frame(maxWidth: .infinity)
-                        .minimumScaleFactor(0.3)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .minimumScaleFactor(0.5)
                         .font(.title)
-                        .lineLimit(1)
+                        .lineLimit(2)
                         .padding(5)
                     
                 }
-                .offset(y: 35)
+                .offset(y: 40)
                 
                 
                 VStack {
                     Section {
                         Text("Opponent Score")
                     }
-                    .offset(y:85)
+                    .offset(y:55)
                     
                     ZStack {
                         VStack(spacing:0) {
@@ -123,7 +129,7 @@ struct GameView: View {
                             ForEach(Array(opponentBlocks.enumerated()), id: \.offset) { (rowIndex, row) in
                                 HStack(spacing:0) {
                                     ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
-                                        OpponentCellView(row: rowIndex, col: columnIndex, selectedOpponentRow: $selectedOpponentRow, selectedOpponentCol: $selectedOpponentCol, blockState: $opponentBlocks, shipType: $selectedShip, currentPlayer: $currentPlayer, message: $message)
+                                        OpponentCellView(row: rowIndex, col: columnIndex, selectedOpponentRow: $selectedOpponentRow, selectedOpponentCol: $selectedOpponentCol, blockState: $opponentBlocks, shipType: $selectedShip, currentPlayer: $currentPlayer, message: $message, isWaitingForAttack: $isWaitingForAttack)
                                     }
                                 }
                             }
@@ -133,20 +139,20 @@ struct GameView: View {
                             initializeOpponentBlocks()
                         }
                         .onTapGesture {
-                          //  message = message +
-                           // sendAttacktoOpponent()
-                           // currentPlayerIndex = 1
+                            //  message = message +
+                            // sendAttacktoOpponent()
+                            // currentPlayerIndex = 1
                         }
                         
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.red)
                     .scaleEffect(0.8)
-                    .offset(y: 35)
+                    .offset(y: 5)
                     
                 }
                 
-                VStack {
+                Section {
                     Section {
                         Text("Player Score:")
                         //Text("select attact coordinate:")
@@ -177,7 +183,7 @@ struct GameView: View {
                                 HStack(spacing:0) {
                                     ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
                                         // ForEach(0..<gridSize) { column in
-                                        CellView(row: rowIndex, col: columnIndex, selectedRow: $selectedRow, selectedCol: $selectedCol, blockState: $blockTextStruct, shipType: $selectedShip, isAnimating5: $isAnimating5, isAnimating4: $isAnimating4, isAnimating3: $isAnimating3, isAnimating2: $isAnimating2, isAnimating1: $isAnimating1)
+                                        CellView(row: rowIndex, col: columnIndex, selectedRow: $selectedRow, selectedCol: $selectedCol, blockState: $blockTextStruct, shipType: $selectedShip, isAnimating5: $isAnimating5, isAnimating4: $isAnimating4, isAnimating3: $isAnimating3, isAnimating2: $isAnimating2, isAnimating1: $isAnimating1, isIntheGame: $isIntheGame)
                                     }
                                 }
                             }
@@ -189,28 +195,29 @@ struct GameView: View {
                     .scaleEffect(0.8)
                     .offset(x: 5 , y: -20)
                     .onAppear {
+                        isIntheGame = true
                         preparePlayerboard(cellStatus: &blockTextStruct)
                         for (key, value) in shipsCoordinate {
                             print("\(key): \(value)", terminator: " ")
                         }
                         
-//                                    if currentPlayer == "Opponent" {
-//                                        receiveOpponentAttack()
-//                                    }
+                        //checkShipStatus()
+                    }
+                    .alert("You sunk my \(sunkShipAlertText)", isPresented: $showSunkShipAlert) {
+                        Button("Dissmis") { showSunkShipAlert = false }
                     }
                     
                 }
+                .offset(y: -50)
                 
             }
+            .offset(y: 30)
         }
         .onAppear {
             // Shuffle the players array
             players.shuffle()
             print("Game Started: \(currentPlayerIndex)")
             currentPlayer = players[currentPlayerIndex]
-             
-             // Update the current player index
-             //currentPlayerIndex = 0
             
             prepareOpponentAttack(gridSize: gridSize)
             
@@ -226,8 +233,8 @@ struct GameView: View {
     }
     
     func delay(seconds: Double, closure: @escaping () -> Void) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
-        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
+    }
     
     private func getButtonSize() -> CGFloat {
         let screenWidth = UIScreen.main.bounds.width
@@ -256,7 +263,7 @@ struct GameView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                var cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .white, cellText: "")
+                let cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .white, cellText: "")
                 row.append(cellStatus)
             }
             opponentBlocks.append(row)
@@ -280,9 +287,6 @@ struct GameView: View {
     }
     
     func prepareOpponentAttack(gridSize: Int) {
-        // Create an empty set to store unique coordinates
-        //   var coordinates = Set<Coordinate>()
-        
         // Generate unique coordinates
         while opponentAttackCoordinates.count < gridSize * gridSize {
             let x = Int.random(in: 0..<gridSize)
@@ -292,33 +296,59 @@ struct GameView: View {
         }
         
         // Print the coordinates
-        for coordinate in opponentAttackCoordinates {
+        for _ in opponentAttackCoordinates {
             //    print(coordinate)
         }
     }
     
     func receiveOpponentAttack() {
         if let element = opponentAttackCoordinates.popFirst() {
-            message = "Opponent attack you at: \(element)"
-            print("Element:", element)
+            message = "Opponent attack you at: \(Character(UnicodeScalar(element.x + 65)!))\(element.y + 1)."
+            
+            //  print("Element:", element)
             
             //update player board status
-            for (row, rowBlock) in blockTextStruct.enumerated() {
-                for (col, _) in rowBlock.enumerated() {
+            for (_, rowBlock) in blockTextStruct.enumerated() {
+                for (_, _) in rowBlock.enumerated() {
                     if blockTextStruct[element.x][element.y].shipType != nil {
+                        print("Hitted ship type : \(String(describing: blockTextStruct[element.x][element.y].shipType))")
                         blockTextStruct[element.x][element.y].cellText = "O"
                         blockTextStruct[element.x][element.y].bgColor = .red
-                        playerResponse = "Hit"
+                        
+                        //   if blockTextStruct[element.x][element.y].cellText == "O" {
+                        //                            switch blockTextStruct[element.x][element.y].shipType {
+                        //                            case .carrier:
+                        //                                hitCountforCarrier += 1
+                        //                            case .battleShip:
+                        //                                hitCountforBattleShip += 1
+                        //                            case .cruiser:
+                        //                                hitCountforCruiser += 1
+                        //                            case .submarine:
+                        //                                hitCountforSubmarine += 1
+                        //                            case .Destoyer:
+                        //                                hitCountforDestroyer += 1
+                        //                            case .none:
+                        //                                break
+                        //                            }
+                        
+                      //  checkShipStatus(shipType: blockTextStruct[element.x][element.y].shipType ?? nil)
+                        //   }
+                        playerResponse = "Hit ✌️"
+                        
                     } else {
                         blockTextStruct[element.x][element.y].cellText = "X"
                         blockTextStruct[element.x][element.y].bgColor = .white
-                        playerResponse = "Miss"
+                        playerResponse = "Miss 😢"
                     }
                 }
             }
             
+            if blockTextStruct[element.x][element.y].cellText == "O" {
+                checkShipStatus(shipType: blockTextStruct[element.x][element.y].shipType ?? nil)
+            }
+            
             if playerResponse != "" {
-                message = message + " " + playerResponse
+                message = message + " --------- " + playerResponse
             }
             
         }
@@ -326,9 +356,55 @@ struct GameView: View {
         //   print("Remaining Set:", opponentAttackCoordinates)
     }
     
-    func sendAttacktoOpponent() {
-        print("my attack is ......     to do")
-       // currentPlayerIndex = 1
+    func checkShipStatus(shipType: CellStatus.ShipType!) {
+        print("check ship Type : \(String(describing: shipType))")
+        switch shipType {
+        case .carrier:
+            hitCountforCarrier += 1
+        case .battleShip:
+            hitCountforBattleShip += 1
+        case .cruiser:
+            hitCountforCruiser += 1
+        case .submarine:
+            hitCountforSubmarine += 1
+        case .Destoyer:
+            hitCountforDestroyer += 1
+        case .none:
+            break
+        }
+        
+        
+        
+        if hitCountforCarrier == 5 {
+            showSunkShipAlert = true
+            sunkShipAlertText = "AirCraft Carrier"
+            hitCountforCarrier = 0
+        }
+        
+        if hitCountforBattleShip == 4 {
+            showSunkShipAlert = true
+            sunkShipAlertText = "BattleShip"
+            hitCountforBattleShip = 0
+        }
+        
+        if hitCountforSubmarine == 3 {
+            showSunkShipAlert = true
+            sunkShipAlertText = "Submarine"
+            hitCountforSubmarine = 0
+        }
+        
+        if hitCountforCruiser == 3 {
+            showSunkShipAlert = true
+            sunkShipAlertText = "Cruiser"
+            hitCountforCruiser = 0
+        }
+        
+        if hitCountforDestroyer == 2 {
+            showSunkShipAlert = true
+            sunkShipAlertText = "Destroyer"
+            hitCountforDestroyer = 0
+        }
+        
     }
     
 }

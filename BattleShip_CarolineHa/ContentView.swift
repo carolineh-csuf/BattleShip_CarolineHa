@@ -37,7 +37,8 @@ struct ContentView: View {
     @State private var isHorizontal: Bool = false
     @State private var showAlert: Bool = false
     @State private var shipsCoordinate: [CellStatus.ShipType: [(Int,Int)]] = [:]
-
+    @State var isIntheGame:Bool = false
+    
     var body: some View {
         
         NavigationView {
@@ -68,7 +69,7 @@ struct ContentView: View {
                                 HStack(spacing:0) {
                                     ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
                                         // ForEach(0..<gridSize) { column in
-                                        CellView(row: rowIndex, col: columnIndex, selectedRow: $selectedRow, selectedCol: $selectedCol, blockState: $blockTextStruct, shipType: $selectedShip, isAnimating5: $isAnimating5, isAnimating4: $isAnimating4, isAnimating3: $isAnimating3, isAnimating2: $isAnimating2, isAnimating1: $isAnimating1)
+                                        CellView(row: rowIndex, col: columnIndex, selectedRow: $selectedRow, selectedCol: $selectedCol, blockState: $blockTextStruct, shipType: $selectedShip, isAnimating5: $isAnimating5, isAnimating4: $isAnimating4, isAnimating3: $isAnimating3, isAnimating2: $isAnimating2, isAnimating1: $isAnimating1, isIntheGame: $isIntheGame)
                                     }
                                 }
                             }
@@ -83,17 +84,9 @@ struct ContentView: View {
                                 print("showAlert: \(showAlert)")
                             }
                         }
-                        //                .onChange(of: blockTextStruct[selectedRow][selectedCol].isSelected) {newValue in
-                        //
-                        //                    getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: selectedShipDirection, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                        //                }
-                        
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.secondary)
-                    
-                    
-            //    }
                     
                 HStack {
                     Text("Your Fleet:")
@@ -112,11 +105,6 @@ struct ContentView: View {
                                 getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: selectedShipDirection, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
                             }
                             .disabled(selectedShip == nil || selectedShipSize == 1)
-                        //                        .alert("You must select a ship first.", isPresented: $isToggleEnabled) {
-                        //                            Button("OK") {
-                        //                                isToggleEnabled.toggle()
-                        //                            }
-                        //                        }
                     }
                     .opacity(selectedShip == nil || selectedShipSize == 1 ? 0.2 : 1.0)
                     
@@ -151,17 +139,6 @@ struct ContentView: View {
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating5))
                     .padding(.trailing)
-                    
-                    //                Toggle(isHorizontal ? "Horizontal" : "Vertical", isOn: $isHorizontal)
-                    //                    .toggleStyle(SwitchToggleStyle(tint: .blue))
-                    //                    .frame(width: 140)
-                    //                    .onChange(of: isHorizontal) { newValue in
-                    //                       selectedShipDirection = newValue ? .horizontal : .vertical
-                    //                        // Handle toggle state change
-                    //                        print("Toggle Horizontal direction to: \(newValue)")
-                    //                        print("selectedShipDirection: \(selectedShipDirection)")
-                    //                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: selectedShipDirection, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                    //                    }
                 }
                 
                 Button(action: {
@@ -308,7 +285,7 @@ struct ContentView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                var cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .blue, cellText: "")
+                let cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .blue, cellText: "")
                 row.append(cellStatus)
             }
             blockTextStruct.append(row)
@@ -403,6 +380,7 @@ struct ContentView: View {
         }
         shipsCoordinate.updateValue(shipCoordinate, forKey: shipType)
     }
+    
 }
 
 
@@ -418,7 +396,7 @@ struct BoldButtonStyle: ButtonStyle {
             .background(isAnimating ? .green : .blue)
             .cornerRadius(10)
             .scaleEffect(isAnimating ? 1.0 : 0.8)
-            .animation(.spring())
+           // .animation(.spring())
     }
 }
 
