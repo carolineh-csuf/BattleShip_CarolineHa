@@ -16,15 +16,18 @@ struct OpponentCellView: View {
     @Binding var selectedOpponentCol: Int
     @Binding var blockState: [[CellStatus]]
     @Binding var shipType: CellStatus.ShipType!
+    @Binding var currentPlayer: String
+    @Binding var message: String
 //    @Binding var isAnimating5: Bool
 //    @Binding var isAnimating4: Bool
 //    @Binding var isAnimating3: Bool
 //    @Binding var isAnimating2: Bool
 //    @Binding var isAnimating1: Bool
     
+    @State private var isAttacked: Bool = false
     
     var body: some View {
-        Text("")
+        Text(blockState[row][col].cellText)
             .frame(width: getButtonSize(), height: getButtonSize())
             .background(blockState[row][col].bgColor)
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
@@ -34,17 +37,35 @@ struct OpponentCellView: View {
                     selectedOpponentRow = row
                     selectedOpponentCol = col
                     
-                    //clear previous states
-                    for (row, rowBlock) in blockState.enumerated() {
-                        for (col, _) in rowBlock.enumerated() {
-                            blockState[row][col].bgColor = .white
-                        }
-                    }
+                    //check if attacked
+                            if blockState[selectedOpponentRow][selectedOpponentCol].bgColor == .pink {
+                                isAttacked = true
+                                return
+                            }
+
                     
                     //set selected blocks states to be highlight
                     blockState[row][col].bgColor = .yellow
-                    print("selected Opponent Row is \(selectedOpponentRow), Col is \(selectedOpponentCol)")
+                    //blockState[row][col].cellText = "A"
+                    
+                    message = "Attracking Opponent at Coordinate(x: \(selectedOpponentRow) ,y: \(selectedOpponentCol)"
+                    print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
+                    
+                    
+                    for (row, rowBlock) in blockState.enumerated() {
+                        for (col, _) in rowBlock.enumerated() {
+                            blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .pink
+                            blockState[selectedOpponentRow][selectedOpponentCol].cellText = "A"
+                        }
+                    }
+                    
+                    //give turn to Opponent
+                    currentPlayer = "Opponent"
+                    print("Give turn to player: \(currentPlayer)")
                 }
+            }
+            .alert("You already attack this area.", isPresented: $isAttacked){
+                Button("OK") { isAttacked = false}
             }
     }
     

@@ -9,7 +9,6 @@ import SwiftUI
 
 @main
 struct BattleShip_CarolineHaApp: App {
-   // let cells:[[CellStatus]] = [[]]
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -17,6 +17,7 @@ struct ContentView: View {
         case vertical;
     }
     
+    //@State var currentPlayerIndex: Int
     // @Binding var blockTextStruct: [[CellStatus]]
     
     @State var blockTextStruct:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .blue, cellText: "")]]
@@ -35,8 +36,8 @@ struct ContentView: View {
     @State private var isAnimating1: Bool = false
     @State private var isHorizontal: Bool = false
     @State private var showAlert: Bool = false
-    //    @State private var isToggleEnabled = false
-    
+    @State private var shipsCoordinate: [CellStatus.ShipType: [(Int,Int)]] = [:]
+
     var body: some View {
         
         NavigationView {
@@ -283,7 +284,7 @@ struct ContentView: View {
                     .padding()
                     Spacer()
 
-                    NavigationLink(destination: GameView(blockTextStruct: $blockTextStruct)) {
+                    NavigationLink(destination:GameView(blockTextStruct: $blockTextStruct, shipsCoordinate: $shipsCoordinate)) {
                         Text("Start Game")
                             .padding()
                     }
@@ -400,6 +401,7 @@ struct ContentView: View {
                 
             }
         }
+        shipsCoordinate.updateValue(shipCoordinate, forKey: shipType)
     }
 }
 
