@@ -17,6 +17,14 @@ struct CellView: View {
     @Binding var selectedRow: Int
     @Binding var selectedCol: Int
     @Binding var blockState: [[CellStatus]]
+    @Binding var shipType: CellStatus.ShipType!
+    @Binding var isAnimating5: Bool
+    @Binding var isAnimating4: Bool
+    @Binding var isAnimating3: Bool
+    @Binding var isAnimating2: Bool
+    @Binding var isAnimating1: Bool
+    
+    @State private var showAlert: Bool = false
     
     var body: some View {
         
@@ -30,6 +38,14 @@ struct CellView: View {
                     selectedRow = row
                     selectedCol = col
                     print("selected Row is \(selectedRow), Col is \(selectedCol)")
+                                 
+                    //clear shipType
+                    shipType = nil
+                    isAnimating5 = false
+                    isAnimating4 = false
+                    isAnimating3 = false
+                    isAnimating2 = false
+                    isAnimating1 = false
                     
                     //clear previous states
                     for (row, rowBlock) in blockState.enumerated() {
@@ -41,6 +57,14 @@ struct CellView: View {
                     
                     //set selected blocks states to be highlight
                     blockState[row][col].isSelected = true
+                    if blockState[row][col].shipType != nil {
+                        showAlert = true
+                    }
+                }
+            }
+            .alert("Invalid Placement", isPresented: $showAlert) {
+                Button("OK") {
+                    showAlert = false
                 }
             }
     }
