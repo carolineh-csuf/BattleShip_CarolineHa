@@ -58,8 +58,8 @@ struct OpponentCellView: View {
                     
                   //  Character(UnicodeScalar(selectedOpponentRow + 65)!)
                     
-                    message = "Attracking Opponent at  \(Character(UnicodeScalar(selectedOpponentRow + 65)!))\(selectedOpponentCol + 1)."
-                    print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
+                    message = "Attacking Opponent at  \(Character(UnicodeScalar(selectedOpponentRow + 65)!))\(selectedOpponentCol + 1)."
+                   // print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
                     
                     for (_, rowBlock) in blockState.enumerated() {
                         for (_, _) in rowBlock.enumerated() {

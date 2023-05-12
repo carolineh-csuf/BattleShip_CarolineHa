@@ -17,10 +17,11 @@ struct ContentView: View {
         case vertical;
     }
     
-    @State var blockTextStruct:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .clear, cellText: "")]]
+    @State var blockTextStruct:[[CellStatus]] = [[.init(isSelected: false, bgColor: .clear, cellText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
+    @State var isIntheGame:Bool = false
     
     @State private var selectedShip: CellStatus.ShipType! = nil
     @State private var selectedShipSize: Int = 0
@@ -34,7 +35,15 @@ struct ContentView: View {
     @State private var isHorizontal: Bool = false
     @State private var showAlert: Bool = false
     @State private var shipsCoordinate: [CellStatus.ShipType: [(Int,Int)]] = [:]
-    @State var isIntheGame:Bool = false
+    
+    @State private var isCarriedSet: Bool = false
+    @State private var isBattleShipSet: Bool = false
+    @State private var isCruiserSet: Bool = false
+    @State private var isSubmarineSet: Bool = false
+    @State private var isDestroyerSet: Bool = false
+    
+    @State private var showOutofGridAlert: Bool = false
+    
     
     var body: some View {
         
@@ -79,6 +88,11 @@ struct ContentView: View {
                             Button("OK") {
                                 showAlert = false
                                 print("showAlert: \(showAlert)")
+                            }
+                        }
+                        .alert("Out of Grid! Try another cell or toggle direction for fit.", isPresented: $showOutofGridAlert) {
+                            Button("OK") {
+                                showOutofGridAlert = false
                             }
                         }
                     }
@@ -290,20 +304,34 @@ struct ContentView: View {
                     .padding()
                     Spacer()
 
-                    NavigationLink(destination:GameView(blockTextStruct: $blockTextStruct, shipsCoordinate: $shipsCoordinate)) {
+                    NavigationLink(destination:GameView(blockTextStruct: $blockTextStruct, shipsCoordinate: $shipsCoordinate).navigationBarBackButtonHidden(true)
+                        .navigationBarItems(leading: MyBackButton(label: "Restart"))) {
                         Text("Start Game")
                             .padding()
                     }
+                    .disabled(!(isCarriedSet && isBattleShipSet && isCruiserSet && isSubmarineSet && isDestroyerSet))
                     
                 }
                 
             }
            .navigationTitle("BattleShip")
            .navigationBarTitleDisplayMode(.inline)
-//            .padding()
+           .onAppear {
+               reset()
+           }
         }
         
     }
+    
+    func reset() {
+        isCarriedSet = false
+        isBattleShipSet = false
+        isSubmarineSet = false
+        isCruiserSet = false
+        isDestroyerSet = false
+        
+    }
+    
     
     func initializeBlockTextStruct() {
         let numRows = gridSize
@@ -314,7 +342,7 @@ struct ContentView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                let cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 1.0), cellText: "")
+                let cellStatus = CellStatus(isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 1.0), cellText: "")
                 row.append(cellStatus)
             }
             blockTextStruct.append(row)
@@ -369,11 +397,13 @@ struct ContentView: View {
                             if coordinate.1 == col && coordinate.0 == row {
                                 blockState[row][col].bgColor = .indigo
                                 blockState[row][col].shipType = shipType
+                                checkShipSetUp(shipType: shipType)
                             }
                         }
                     }
                 }
             } else {
+                showOutofGridAlert = true
                 print("This is out of the range.")
             }
         }
@@ -397,12 +427,14 @@ struct ContentView: View {
                             if coordinate.1 == col && coordinate.0 == row {
                                 blockState[row][col].bgColor = .indigo
                                 blockState[row][col].shipType = shipType
+                                checkShipSetUp(shipType: shipType)
                             }
                         }
                     }
                 }
                 
             } else {
+                showOutofGridAlert = true
                 print("This is out of the range.")
                 
             }
@@ -410,8 +442,22 @@ struct ContentView: View {
         shipsCoordinate.updateValue(shipCoordinate, forKey: shipType)
     }
     
+    func checkShipSetUp(shipType: CellStatus.ShipType) {
+        switch shipType  {
+        case .carrier:
+            isCarriedSet = true
+        case .battleShip:
+            isBattleShipSet = true
+        case .cruiser:
+            isCruiserSet = true
+        case .submarine:
+            isSubmarineSet = true
+        case .Destoyer:
+            isDestroyerSet = true
+        }
+    }
+    
 }
-
 
 struct BoldButtonStyle: ButtonStyle {
     var isAnimating: Bool
@@ -426,6 +472,23 @@ struct BoldButtonStyle: ButtonStyle {
             .cornerRadius(10)
             .scaleEffect(isAnimating ? 1.0 : 0.8)
            // .animation(.spring())
+    }
+}
+
+struct MyBackButton: View {
+    let label: String
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+            
+        }) {
+            HStack {
+                Image(systemName: "restart.circle.fill")
+                Text(label)
+            }
+        }
     }
 }
 

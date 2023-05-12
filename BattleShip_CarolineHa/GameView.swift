@@ -27,7 +27,7 @@ struct GameView: View {
         case vertical;
     }
     
-    @State var opponentBlocks:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .clear, cellText: "")]]
+    @State var opponentBlocks:[[CellStatus]] = [[.init(isSelected: false, bgColor: .clear, cellText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
@@ -261,7 +261,7 @@ struct GameView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                let cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .white, cellText: "")
+                let cellStatus = CellStatus(isSelected: false, bgColor: .white, cellText: "")
                 row.append(cellStatus)
             }
             opponentBlocks.append(row)
@@ -309,28 +309,9 @@ struct GameView: View {
             for (_, rowBlock) in blockTextStruct.enumerated() {
                 for (_, _) in rowBlock.enumerated() {
                     if blockTextStruct[element.x][element.y].shipType != nil {
-                        print("Hitted ship type : \(String(describing: blockTextStruct[element.x][element.y].shipType))")
                         blockTextStruct[element.x][element.y].cellText = "O"
                         blockTextStruct[element.x][element.y].bgColor = .red
-                        
-                        //   if blockTextStruct[element.x][element.y].cellText == "O" {
-                        //                            switch blockTextStruct[element.x][element.y].shipType {
-                        //                            case .carrier:
-                        //                                hitCountforCarrier += 1
-                        //                            case .battleShip:
-                        //                                hitCountforBattleShip += 1
-                        //                            case .cruiser:
-                        //                                hitCountforCruiser += 1
-                        //                            case .submarine:
-                        //                                hitCountforSubmarine += 1
-                        //                            case .Destoyer:
-                        //                                hitCountforDestroyer += 1
-                        //                            case .none:
-                        //                                break
-                        //                            }
-                        
-                      //  checkShipStatus(shipType: blockTextStruct[element.x][element.y].shipType ?? nil)
-                        //   }
+
                         playerResponse = "Hit ✌️"
                         
                     } else {
@@ -370,8 +351,6 @@ struct GameView: View {
         case .none:
             break
         }
-        
-        
         
         if hitCountforCarrier == 5 {
             showSunkShipAlert = true
