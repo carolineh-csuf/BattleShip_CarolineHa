@@ -27,7 +27,7 @@ struct GameView: View {
         case vertical;
     }
     
-    @State var opponentBlocks:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .blue, cellText: "")]]
+    @State var opponentBlocks:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .clear, cellText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
@@ -103,7 +103,7 @@ struct GameView: View {
                 
                 VStack {
                     Section {
-                        Text("Opponent Score")
+                        Text("Opponent")
                     }
                     .offset(y:55)
                     
@@ -148,14 +148,12 @@ struct GameView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.red)
                     .scaleEffect(0.8)
-                    .offset(y: 5)
-                    
+                    .offset(x: 5, y: 5)
                 }
                 
                 Section {
                     Section {
-                        Text("Player Score:")
-                        //Text("select attact coordinate:")
+                        Text("Player")
                     }
                     .offset(y: 30)
                     
@@ -191,7 +189,7 @@ struct GameView: View {
                         .offset(x: getButtonSize()/2 ,y: getButtonSize()/2)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.secondary)
+                    .background(.blue)
                     .scaleEffect(0.8)
                     .offset(x: 5 , y: -20)
                     .onAppear {

@@ -17,10 +17,7 @@ struct ContentView: View {
         case vertical;
     }
     
-    //@State var currentPlayerIndex: Int
-    // @Binding var blockTextStruct: [[CellStatus]]
-    
-    @State var blockTextStruct:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .blue, cellText: "")]]
+    @State var blockTextStruct:[[CellStatus]] = [[.init(cellType: CellStatus.CellType.empty, isSelected: false, bgColor: .clear, cellText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
@@ -86,17 +83,25 @@ struct ContentView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.secondary)
+                  //  .background(.blue)
                     
                 HStack {
                     Text("Your Fleet:")
-                        .font(.title2)
-                    HStack {
-                        Text("Ship Direction:")
-                        
-                        Toggle(isHorizontal ? "Horizontal" : "Vertical", isOn: $isHorizontal)
+                        .font(.headline)
+                        .padding(.leading)
+                    
+                        Toggle(isOn: $isHorizontal) {
+                            
+                            Text(isHorizontal ? "Direction: Horizontal" : "Direction: Vertical")
+                                .frame(maxWidth: .infinity)
+                                .font(.headline)
+                                .lineLimit(1)
+                                .padding(.leading, 50)
+                            
+                            Spacer()
+                        }
                             .toggleStyle(SwitchToggleStyle(tint: .blue))
-                            .frame(width: 140)
+                            .padding(.trailing)
                             .onChange(of: isHorizontal) { newValue in
                                 selectedShipDirection = newValue ? .horizontal : .vertical
                                 // Handle toggle state change
@@ -105,7 +110,6 @@ struct ContentView: View {
                                 getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: selectedShipDirection, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
                             }
                             .disabled(selectedShip == nil || selectedShipSize == 1)
-                    }
                     .opacity(selectedShip == nil || selectedShipSize == 1 ? 0.2 : 1.0)
                     
                 }
@@ -119,6 +123,11 @@ struct ContentView: View {
                             isAnimating2 = false
                             isAnimating1 = false
                             
+                            if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                showAlert = true
+                                return
+                            }
+
                             selectedShip = .carrier
                             selectedShipSize = 5
                             
@@ -126,7 +135,7 @@ struct ContentView: View {
                         }
                     }){
                         HStack{
-                            Text("AirCraft Carrier: ")
+                            Text("AirCraft Carrier")
                             HStack(spacing:0){
                                 Image(systemName: "train.side.rear.car")
                                 Image(systemName: "train.side.middle.car")
@@ -149,6 +158,11 @@ struct ContentView: View {
                         isAnimating2 = false
                         isAnimating1 = false
                         
+                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                            showAlert = true
+                            return
+                        }
+                        
                         selectedShip = .battleShip
                         selectedShipSize = 4
                         
@@ -156,7 +170,7 @@ struct ContentView: View {
                     }
                 }){
                     HStack {
-                        Text("BattleShip: size 4")
+                        Text("BattleShip")
                         HStack(spacing:0){
                             Image(systemName: "train.side.rear.car")
                             Image(systemName: "train.side.middle.car")
@@ -177,6 +191,11 @@ struct ContentView: View {
                         isAnimating2 = false
                         isAnimating1 = false
                         
+                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                            showAlert = true
+                            return
+                        }
+                        
                         selectedShip = .cruiser
                         selectedShipSize = 3
                         
@@ -184,7 +203,7 @@ struct ContentView: View {
                     }
                 }){
                     HStack {
-                        Text("Cruiser: size 3")
+                        Text("Cruiser")
                         HStack(spacing: 0){
                             Image(systemName: "train.side.rear.car")
                             Image(systemName: "train.side.middle.car")
@@ -204,6 +223,11 @@ struct ContentView: View {
                         isAnimating3 = false
                         isAnimating2 = false
                         
+                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                            showAlert = true
+                            return
+                        }
+                        
                         selectedShip = .submarine
                         selectedShipSize = 3
                         
@@ -211,7 +235,7 @@ struct ContentView: View {
                     }
                 }){
                     HStack {
-                        Text("Submarine size 3")
+                        Text("Submarine")
                         HStack(spacing:0){
                             Image(systemName: "train.side.rear.car")
                             Image(systemName: "train.side.middle.car")
@@ -231,6 +255,11 @@ struct ContentView: View {
                         isAnimating3 = false
                         isAnimating1 = false
                         
+                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                            showAlert = true
+                            return
+                        }
+                        
                         selectedShip = .Destoyer
                         selectedShipSize = 2
                         
@@ -238,7 +267,7 @@ struct ContentView: View {
                     }
                 }){
                     HStack {
-                        Text("Destroyer: size 2")
+                        Text("Destroyer")
                         HStack(spacing:0){
                             Image(systemName: "train.side.rear.car")
                             Image(systemName: "train.side.front.car")
@@ -285,7 +314,7 @@ struct ContentView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                let cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: .blue, cellText: "")
+                let cellStatus = CellStatus(cellType: .empty, isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 1.0), cellText: "")
                 row.append(cellStatus)
             }
             blockTextStruct.append(row)
@@ -320,7 +349,7 @@ struct ContentView: View {
                             if coordinate.1 == col && coordinate.0 == row &&
                                 blockState[row][col].shipType != nil && blockState[row][col].shipType != shipType {
                                 showAlert = true
-                                print("Invalid placement, overlapping cells, alert shows")
+                                print("Invalid placement,Please select another coordinate.")
                                 return
                             }
                         }
@@ -332,13 +361,13 @@ struct ContentView: View {
                     for (col, _) in rowBlock.enumerated() {
                         //clear current ship status if it was there
                         if blockState[row][col].shipType == shipType {
-                            blockState[row][col].bgColor = .blue
+                            blockState[row][col].bgColor = Color(red: 0.0, green: 191.0/255.0, blue: 1.0)
                             blockState[row][col].shipType = nil
                         }
                         //update the latest ship View
                         for coordinate in shipCoordinate {
                             if coordinate.1 == col && coordinate.0 == row {
-                                blockState[row][col].bgColor = .green
+                                blockState[row][col].bgColor = .indigo
                                 blockState[row][col].shipType = shipType
                             }
                         }
@@ -359,14 +388,14 @@ struct ContentView: View {
                     for (col, _) in rowBlock.enumerated() {
                         //clear current ship status if it was there
                         if blockState[row][col].shipType == shipType {
-                            blockState[row][col].bgColor = .blue
+                            blockState[row][col].bgColor = Color(red: 0.0, green: 191.0/255.0, blue: 1.0)
                             blockState[row][col].shipType = nil
                         }
                         
                         //update latest ship view
                         for coordinate in shipCoordinate {
                             if coordinate.1 == col && coordinate.0 == row {
-                                blockState[row][col].bgColor = .green
+                                blockState[row][col].bgColor = .indigo
                                 blockState[row][col].shipType = shipType
                             }
                         }
