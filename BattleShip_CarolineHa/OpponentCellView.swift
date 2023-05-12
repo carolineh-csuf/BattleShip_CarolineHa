@@ -19,58 +19,70 @@ struct OpponentCellView: View {
     @Binding var currentPlayer: String
     @Binding var message: String
     @Binding var isWaitingForAttack: Bool
-//    @Binding var isAnimating5: Bool
-//    @Binding var isAnimating4: Bool
-//    @Binding var isAnimating3: Bool
-//    @Binding var isAnimating2: Bool
-//    @Binding var isAnimating1: Bool
+    @Binding var opponentHitCount: Int
     
     @State private var isAttacked: Bool = false
     @State private var showInvalidTapAlert: Bool = false
+    
+    @State private var opponentResponse: String = ""
     
     var body: some View {
         Text(blockState[row][col].cellText)
             .frame(width: getButtonSize(), height: getButtonSize())
             .background(blockState[row][col].bgColor)
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
+        //            .onChange(of: opponentHitCount) { newValue in
+        //                print("hitCount : \(opponentHitCount)")
+        //            }
             .onTapGesture {
+                // print("hitCount is \(hitCount)")
                 withAnimation {
                     if isWaitingForAttack {
                         showInvalidTapAlert = true
                         return
                     }
                     
-                    
                     //set seletedBlock Index
                     selectedOpponentRow = row
                     selectedOpponentCol = col
                     
                     //check if attacked
-                            if blockState[selectedOpponentRow][selectedOpponentCol].bgColor == .pink {
-                                isAttacked = true
-                                return
-                            }
-
-                    
-                    //set selected blocks states to be highlight
-                    blockState[row][col].bgColor = .yellow
-                    //blockState[row][col].cellText = "A"
-                    
-                  //  Character(UnicodeScalar(selectedOpponentRow + 65)!)
+                    if blockState[selectedOpponentRow][selectedOpponentCol].bgColor == .pink {
+                        isAttacked = true
+                        return
+                    }
                     
                     message = "Attacking Opponent at  \(Character(UnicodeScalar(selectedOpponentRow + 65)!))\(selectedOpponentCol + 1)."
-                   // print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
+                    // print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
                     
                     for (_, rowBlock) in blockState.enumerated() {
                         for (_, _) in rowBlock.enumerated() {
-                            blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .pink
-                            blockState[selectedOpponentRow][selectedOpponentCol].cellText = "A"
+                            if  blockState[selectedOpponentRow][selectedOpponentCol].cellHiddenText == "X" {
+                                blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .pink
+                                blockState[selectedOpponentRow][selectedOpponentCol].cellText = "O"
+                                
+                                opponentResponse =  "--------Hit ✌️"
+                                
+                            } else {
+                                blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .gray
+                                blockState[selectedOpponentRow][selectedOpponentCol].cellText = "X"
+                                
+                                opponentResponse = "--------Miss 😢"
+                            }
                         }
+                    }
+                    
+                    //update message
+                    message = message + opponentResponse
+                    
+                    //update hitCount
+                    if  blockState[selectedOpponentRow][selectedOpponentCol].cellHiddenText == "X" {
+                        opponentHitCount += 1
                     }
                     
                     //give turn to Opponent
                     currentPlayer = "Opponent"
-                    print("Give turn to player: \(currentPlayer)")
+                  //  print("Give turn to player: \(currentPlayer)")
                 }
             }
             .alert("You already attack this area.", isPresented: $isAttacked){

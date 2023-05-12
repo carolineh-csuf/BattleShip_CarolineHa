@@ -17,7 +17,7 @@ struct ContentView: View {
         case vertical;
     }
     
-    @State var blockTextStruct:[[CellStatus]] = [[.init(isSelected: false, bgColor: .clear, cellText: "")]]
+    @State var blockTextStruct:[[CellStatus]] = [[.init(isSelected: false, bgColor: .clear, cellText: "", cellHiddenText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
@@ -97,12 +97,15 @@ struct ContentView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                  //  .background(.blue)
-                    
-                HStack {
+                    .offset(y: 20)
+                
+                Divider()
+                    .offset(y: 20)
+                
+                HStack() {
                     Text("Your Fleet:")
                         .font(.headline)
-                        .padding(.leading)
+                        .padding()
                     
                         Toggle(isOn: $isHorizontal) {
                             
@@ -125,14 +128,50 @@ struct ContentView: View {
                             }
                             .disabled(selectedShip == nil || selectedShipSize == 1)
                     .opacity(selectedShip == nil || selectedShipSize == 1 ? 0.2 : 1.0)
+                    .offset(y: 5)
                     
                 }
-                
-                HStack() {
+                VStack (alignment: .leading, spacing: 0) {
+                    HStack() {
+                        Button(action: {
+                            withAnimation {
+                                isAnimating5.toggle()
+                                isAnimating4 = false
+                                isAnimating3 = false
+                                isAnimating2 = false
+                                isAnimating1 = false
+                                
+                                if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                    showAlert = true
+                                    return
+                                }
+                                
+                                selectedShip = .carrier
+                                selectedShipSize = 5
+                                
+                                getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
+                            }
+                        }){
+                            HStack{
+                                Text("AirCraft Carrier")
+                                HStack(spacing:0){
+                                    Image(systemName: "train.side.rear.car")
+                                    Image(systemName: "train.side.middle.car")
+                                    Image(systemName: "train.side.middle.car")
+                                    Image(systemName: "train.side.middle.car")
+                                    Image(systemName: "train.side.front.car")
+                                }
+                            }
+                            .padding()
+                        }
+                        .buttonStyle(BoldButtonStyle(isAnimating: isAnimating5))
+                       // .padding(.trailing)
+                    }
+                    
                     Button(action: {
                         withAnimation {
-                            isAnimating5.toggle()
-                            isAnimating4 = false
+                            isAnimating4.toggle()
+                            isAnimating5 = false
                             isAnimating3 = false
                             isAnimating2 = false
                             isAnimating1 = false
@@ -141,18 +180,17 @@ struct ContentView: View {
                                 showAlert = true
                                 return
                             }
-
-                            selectedShip = .carrier
-                            selectedShipSize = 5
+                            
+                            selectedShip = .battleShip
+                            selectedShipSize = 4
                             
                             getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
                         }
                     }){
-                        HStack{
-                            Text("AirCraft Carrier")
+                        HStack {
+                            Text("BattleShip")
                             HStack(spacing:0){
                                 Image(systemName: "train.side.rear.car")
-                                Image(systemName: "train.side.middle.car")
                                 Image(systemName: "train.side.middle.car")
                                 Image(systemName: "train.side.middle.car")
                                 Image(systemName: "train.side.front.car")
@@ -160,139 +198,111 @@ struct ContentView: View {
                         }
                         .padding()
                     }
-                    .buttonStyle(BoldButtonStyle(isAnimating: isAnimating5))
-                    .padding(.trailing)
+                    .buttonStyle(BoldButtonStyle(isAnimating: isAnimating4))
+                   // .padding(.trailing)
+                    .offset(x: 5)
+                    
+                    Button(action: {
+                        withAnimation {
+                            isAnimating3.toggle()
+                            isAnimating5 = false
+                            isAnimating4 = false
+                            isAnimating2 = false
+                            isAnimating1 = false
+                            
+                            if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                showAlert = true
+                                return
+                            }
+                            
+                            selectedShip = .cruiser
+                            selectedShipSize = 3
+                            
+                            getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
+                        }
+                    }){
+                        HStack {
+                            Text("Cruiser")
+                            HStack(spacing: 0){
+                                Image(systemName: "train.side.rear.car")
+                                Image(systemName: "train.side.middle.car")
+                                Image(systemName: "train.side.front.car")
+                            }
+                        }
+                        .padding()
+                    }
+                    .buttonStyle(BoldButtonStyle(isAnimating: isAnimating3))
+                   // .padding(.trailing)
+                    .offset(x: 10)
+                    
+                    Button(action: {
+                        withAnimation {
+                            isAnimating1.toggle()
+                            isAnimating5 = false
+                            isAnimating4 = false
+                            isAnimating3 = false
+                            isAnimating2 = false
+                            
+                            if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                showAlert = true
+                                return
+                            }
+                            
+                            selectedShip = .submarine
+                            selectedShipSize = 3
+                            
+                            getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
+                        }
+                    }){
+                        HStack {
+                            Text("Submarine")
+                            HStack(spacing:0){
+                                Image(systemName: "train.side.rear.car")
+                                Image(systemName: "train.side.middle.car")
+                                Image(systemName: "train.side.front.car")
+                            }
+                        }
+                        .padding()
+                    }
+                    .buttonStyle(BoldButtonStyle(isAnimating: isAnimating1))
+                  //  .padding(.trailing)
+                    .offset(x: 7)
+                    
+                    Button(action: {
+                        withAnimation {
+                            isAnimating2.toggle()
+                            isAnimating5 = false
+                            isAnimating4 = false
+                            isAnimating3 = false
+                            isAnimating1 = false
+                            
+                            if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                showAlert = true
+                                return
+                            }
+                            
+                            selectedShip = .Destoyer
+                            selectedShipSize = 2
+                            
+                            getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
+                        }
+                    }){
+                        HStack {
+                            Text("Destroyer")
+                            HStack(spacing:0){
+                                Image(systemName: "train.side.rear.car")
+                                Image(systemName: "train.side.front.car")
+                            }
+                        }
+                        .padding()
+                    }
+                    .buttonStyle(BoldButtonStyle(isAnimating: isAnimating2))
+                  //  .padding(.trailing)
+                    .offset(x: 10)
                 }
-                
-                Button(action: {
-                    withAnimation {
-                        isAnimating4.toggle()
-                        isAnimating5 = false
-                        isAnimating3 = false
-                        isAnimating2 = false
-                        isAnimating1 = false
-                        
-                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
-                            showAlert = true
-                            return
-                        }
-                        
-                        selectedShip = .battleShip
-                        selectedShipSize = 4
-                        
-                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                    }
-                }){
-                    HStack {
-                        Text("BattleShip")
-                        HStack(spacing:0){
-                            Image(systemName: "train.side.rear.car")
-                            Image(systemName: "train.side.middle.car")
-                            Image(systemName: "train.side.middle.car")
-                            Image(systemName: "train.side.front.car")
-                        }
-                    }
-                    .padding()
-                }
-                .buttonStyle(BoldButtonStyle(isAnimating: isAnimating4))
-                .padding(.trailing)
-                
-                Button(action: {
-                    withAnimation {
-                        isAnimating3.toggle()
-                        isAnimating5 = false
-                        isAnimating4 = false
-                        isAnimating2 = false
-                        isAnimating1 = false
-                        
-                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
-                            showAlert = true
-                            return
-                        }
-                        
-                        selectedShip = .cruiser
-                        selectedShipSize = 3
-                        
-                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                    }
-                }){
-                    HStack {
-                        Text("Cruiser")
-                        HStack(spacing: 0){
-                            Image(systemName: "train.side.rear.car")
-                            Image(systemName: "train.side.middle.car")
-                            Image(systemName: "train.side.front.car")
-                        }
-                    }
-                    .padding()
-                }
-                .buttonStyle(BoldButtonStyle(isAnimating: isAnimating3))
-                .padding(.trailing)
-
-                Button(action: {
-                    withAnimation {
-                        isAnimating1.toggle()
-                        isAnimating5 = false
-                        isAnimating4 = false
-                        isAnimating3 = false
-                        isAnimating2 = false
-                        
-                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
-                            showAlert = true
-                            return
-                        }
-                        
-                        selectedShip = .submarine
-                        selectedShipSize = 3
-                        
-                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                    }
-                }){
-                    HStack {
-                        Text("Submarine")
-                        HStack(spacing:0){
-                            Image(systemName: "train.side.rear.car")
-                            Image(systemName: "train.side.middle.car")
-                            Image(systemName: "train.side.front.car")
-                        }
-                    }
-                    .padding()
-                }
-                .buttonStyle(BoldButtonStyle(isAnimating: isAnimating1))
-                .padding(.trailing)
-                
-                Button(action: {
-                    withAnimation {
-                        isAnimating2.toggle()
-                        isAnimating5 = false
-                        isAnimating4 = false
-                        isAnimating3 = false
-                        isAnimating1 = false
-                        
-                        if blockTextStruct[selectedRow][selectedCol].shipType != nil {
-                            showAlert = true
-                            return
-                        }
-                        
-                        selectedShip = .Destoyer
-                        selectedShipSize = 2
-                        
-                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: isHorizontal ? ShipDirection.horizontal : ShipDirection.vertical, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                    }
-                }){
-                    HStack {
-                        Text("Destroyer")
-                        HStack(spacing:0){
-                            Image(systemName: "train.side.rear.car")
-                            Image(systemName: "train.side.front.car")
-                        }
-                    }
-                    .padding()
-                }
-                .buttonStyle(BoldButtonStyle(isAnimating: isAnimating2))
-                .padding(.trailing)
-                
-                Spacer()
+                    
+                    
+               // Spacer()
                 HStack {
                     Button(action: {
                         initializeBlockTextStruct()
@@ -310,7 +320,6 @@ struct ContentView: View {
                             .padding()
                     }
                     .disabled(!(isCarriedSet && isBattleShipSet && isCruiserSet && isSubmarineSet && isDestroyerSet))
-                    
                 }
                 
             }
@@ -330,6 +339,11 @@ struct ContentView: View {
         isCruiserSet = false
         isDestroyerSet = false
         
+        isAnimating5 = false
+        isAnimating4 = false
+        isAnimating3 = false
+        isAnimating2 = false
+        isAnimating1 = false
     }
     
     
@@ -342,7 +356,7 @@ struct ContentView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                let cellStatus = CellStatus(isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 1.0), cellText: "")
+                let cellStatus = CellStatus(isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 1.0), cellText: "", cellHiddenText: "")
                 row.append(cellStatus)
             }
             blockTextStruct.append(row)
@@ -475,22 +489,22 @@ struct BoldButtonStyle: ButtonStyle {
     }
 }
 
-struct MyBackButton: View {
-    let label: String
-    @Environment(\.presentationMode) var presentationMode
-    
-    var body: some View {
-        Button(action: {
-            self.presentationMode.wrappedValue.dismiss()
-            
-        }) {
-            HStack {
-                Image(systemName: "restart.circle.fill")
-                Text(label)
-            }
-        }
-    }
-}
+//struct MyBackButton: View {
+//    let label: String
+//    @Environment(\.presentationMode) var presentationMode
+//
+//    var body: some View {
+//        Button(action: {
+//            self.presentationMode.wrappedValue.dismiss()
+//
+//        }) {
+//            HStack {
+//                Image(systemName: "restart.circle.fill")
+//                Text(label)
+//            }
+//        }
+//    }
+//}
 
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {

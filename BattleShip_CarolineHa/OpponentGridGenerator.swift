@@ -7,7 +7,7 @@
 
 import Foundation
 
-class OpponentGridGenerator {
+class BattleshipGame {
     let gridSize = 10
     let shipLengths = [5, 4, 3, 3, 2]
     
@@ -80,13 +80,18 @@ class OpponentGridGenerator {
         }
     }
     
-    func printGrid() {
+    func printGrid() -> [[String]] {
+        var result: [[String]] = []
         for row in grid {
+            var temp: [String] = []
             for cell in row {
+                temp.append(cell)
                 print(cell, terminator: " ")
             }
             print()
+            result.append(temp)
         }
+        return result
     }
 }
 

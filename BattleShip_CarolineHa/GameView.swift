@@ -14,6 +14,8 @@ struct Coordinate: Hashable {
 
 struct GameView: View {
     
+    @Environment(\.presentationMode) var presentationMode
+    
     @Binding var blockTextStruct: [[CellStatus]]
     @Binding var shipsCoordinate: [CellStatus.ShipType: [(Int,Int)]]
     
@@ -27,7 +29,7 @@ struct GameView: View {
         case vertical;
     }
     
-    @State var opponentBlocks:[[CellStatus]] = [[.init(isSelected: false, bgColor: .clear, cellText: "")]]
+    @State var opponentBlocks:[[CellStatus]] = [[.init(isSelected: false, bgColor: .clear, cellText: "", cellHiddenText: "")]]
     
     @State var selectedRow = 0
     @State var selectedCol = 0
@@ -48,7 +50,7 @@ struct GameView: View {
     
     @State private var message: String = ""
     @State private var playerResponse: String = ""
-    @State private var opponentResponse: String = ""
+  //  @State private var opponentResponse: String = ""
     
     @State private var opponentAttackCoordinates = Set<Coordinate>()
     @State private var players = ["Player", "Opponent"]
@@ -58,8 +60,9 @@ struct GameView: View {
     
     @State var isIntheGame: Bool = false
     @State var isWaitingForAttack: Bool = false
+    @State var opponentHitCount: Int = 0  // number of hit opponent received
     
-    
+    @State private var playerHitCount: Int = 16 //number of hit player received
     @State private var hitCountforCarrier: Int = 0
     @State private var hitCountforBattleShip: Int = 0
     @State private var hitCountforCruiser: Int = 0
@@ -67,6 +70,9 @@ struct GameView: View {
     @State private var hitCountforDestroyer: Int = 0
     @State private var showSunkShipAlert: Bool = false
     @State private var sunkShipAlertText: String = ""
+    
+    @State private var showWinnerAlert: Bool = false
+    @State private var showWinnerAlertText: String = ""
     
     var body: some View {
         
@@ -80,7 +86,7 @@ struct GameView: View {
                             if newValue == "Opponent" {
                                 isWaitingForAttack = true
                                 
-                                delay(seconds: 2) {
+                                delay(seconds: 1) {
                                     receiveOpponentAttack()
                                     
                                     currentPlayer = "Player"
@@ -129,7 +135,7 @@ struct GameView: View {
                             ForEach(Array(opponentBlocks.enumerated()), id: \.offset) { (rowIndex, row) in
                                 HStack(spacing:0) {
                                     ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
-                                        OpponentCellView(row: rowIndex, col: columnIndex, selectedOpponentRow: $selectedOpponentRow, selectedOpponentCol: $selectedOpponentCol, blockState: $opponentBlocks, shipType: $selectedShip, currentPlayer: $currentPlayer, message: $message, isWaitingForAttack: $isWaitingForAttack)
+                                        OpponentCellView(row: rowIndex, col: columnIndex, selectedOpponentRow: $selectedOpponentRow, selectedOpponentCol: $selectedOpponentCol, blockState: $opponentBlocks, shipType: $selectedShip, currentPlayer: $currentPlayer, message: $message, isWaitingForAttack: $isWaitingForAttack, opponentHitCount: $opponentHitCount)
                                     }
                                 }
                             }
@@ -138,18 +144,28 @@ struct GameView: View {
                         .onAppear {
                             initializeOpponentBlocks()
                         }
-                        .onTapGesture {
-                            //  message = message +
-                            // sendAttacktoOpponent()
-                            // currentPlayerIndex = 1
-                        }
-                        
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.red)
                     .scaleEffect(0.8)
                     .offset(x: 5, y: 5)
                 }
+                .onChange(of: opponentHitCount) { newValue in
+                //                print("opponenthitCount : \(newValue)")
+                                checkVictory()
+                }
+                .alert(isPresented: $showWinnerAlert) {
+                            Alert(
+                                title: Text("Game Over"),
+                                message: Text(showWinnerAlertText),
+                                dismissButton: .default(Text("OK"), action: {
+                                    showWinnerAlert = false
+                                    playerHitCount = 0
+                                    opponentHitCount = 0
+                                    presentationMode.wrappedValue.dismiss()
+                                })
+                            )
+                        }
                 
                 Section {
                     Section {
@@ -197,12 +213,15 @@ struct GameView: View {
                         preparePlayerboard(cellStatus: &blockTextStruct)
                         for (key, value) in shipsCoordinate {
                             print("\(key): \(value)", terminator: " ")
+                            print()
                         }
-                        
-                        //checkShipStatus()
+                    }
+                    .onChange(of: playerHitCount) { newValue in
+                        print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
+                        checkVictory()
                     }
                     .alert("You sunk my \(sunkShipAlertText)", isPresented: $showSunkShipAlert) {
-                        Button("Dissmis") { showSunkShipAlert = false }
+                        Button("Dismiss") { showSunkShipAlert = false }
                     }
                     
                 }
@@ -220,13 +239,27 @@ struct GameView: View {
             prepareOpponentAttack(gridSize: gridSize)
             
             if currentPlayer == "Opponent" {
-                delay(seconds: 2) {
+                delay(seconds: 1) {
                     receiveOpponentAttack()
                     
                     //give turn to player
                     currentPlayer = "Player"
                 }
             }
+        }
+    }
+    
+    private func checkVictory() {
+        if opponentHitCount == 17 {
+            showWinnerAlert = true
+            showWinnerAlertText = "Congras! You Win!"
+            //opponentHitCount = 0
+        }
+        
+        if playerHitCount == 17 {
+            showWinnerAlert = true
+            showWinnerAlertText = "Sorry! You Lose!"
+          //  playerHitCount = 0
         }
     }
     
@@ -257,20 +290,36 @@ struct GameView: View {
         let numColumns = gridSize
         
         opponentBlocks.removeAll()
-        
+
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                let cellStatus = CellStatus(isSelected: false, bgColor: .white, cellText: "")
+                let cellStatus = CellStatus(isSelected: false, bgColor: .white, cellText: "", cellHiddenText: "")
                 row.append(cellStatus)
             }
             opponentBlocks.append(row)
         }
+        
+        let randomGrid = opponentBoardGenerator()
+     //   print("Opponent Board Init, randomGrid is \(randomGrid)")
+        
+        for (rowIndex, row) in randomGrid.enumerated() {
+            for (colIndex, element) in row.enumerated() {
+                if element == "X" {
+             //       print("Found 'X' at row \(rowIndex), column \(colIndex)")
+                    opponentBlocks[rowIndex][colIndex].cellHiddenText = "X"
+                }
+            }
+        }
+      // print("opponentBlocks is \(opponentBlocks)")
     }
     
     
-    func opponentBoardGenerator() {
-        
+    func opponentBoardGenerator() -> [[String]] {
+        let game = BattleshipGame()
+        game.generateRandomGrid()
+        let result = game.printGrid()
+        return result
     }
     
     func preparePlayerboard(cellStatus: inout [[CellStatus]]) {
@@ -322,8 +371,18 @@ struct GameView: View {
                 }
             }
             
+//            if blockTextStruct[element.x][element.y].cellText == "O" {
+//                playerHitCount += 1
+//                checkVictory()
+//            }
+            
             if blockTextStruct[element.x][element.y].cellText == "O" {
+  
+               // playerHitCount += 1
+                
                 checkShipStatus(shipType: blockTextStruct[element.x][element.y].shipType ?? nil)
+                
+               // checkVictory()
             }
             
             if playerResponse != "" {
@@ -337,6 +396,8 @@ struct GameView: View {
     
     func checkShipStatus(shipType: CellStatus.ShipType!) {
         print("check ship Type : \(String(describing: shipType))")
+        playerHitCount += 1
+        
         switch shipType {
         case .carrier:
             hitCountforCarrier += 1
@@ -381,6 +442,8 @@ struct GameView: View {
             sunkShipAlertText = "Destroyer"
             hitCountforDestroyer = 0
         }
+        
+      //  checkVictory()
         
     }
     
