@@ -306,7 +306,8 @@ struct ContentView: View {
                 HStack {
                     Button(action: {
                         initializeBlockTextStruct()
-                        isAnimating5 = false
+                        //isAnimating5 = false
+                        reset()
                         
                     }){ Text("Reset Board")
                             .foregroundColor(.red)
@@ -356,7 +357,7 @@ struct ContentView: View {
         for _ in 0..<numRows {
             var row: [CellStatus] = []
             for _ in 0..<numColumns {
-                let cellStatus = CellStatus(isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 1.0), cellText: "", cellHiddenText: "")
+                let cellStatus = CellStatus(isSelected: false, bgColor: Color(red: 0.0, green: 191.0/255.0, blue: 0.9).opacity(1), cellText: "", cellHiddenText: "")
                 row.append(cellStatus)
             }
             blockTextStruct.append(row)
@@ -403,7 +404,7 @@ struct ContentView: View {
                     for (col, _) in rowBlock.enumerated() {
                         //clear current ship status if it was there
                         if blockState[row][col].shipType == shipType {
-                            blockState[row][col].bgColor = Color(red: 0.0, green: 191.0/255.0, blue: 1.0)
+                            blockState[row][col].bgColor = Color(red: 0.0, green: 191.0/255.0, blue: 0.9).opacity(1)
                             blockState[row][col].shipType = nil
                         }
                         //update the latest ship View
@@ -432,7 +433,7 @@ struct ContentView: View {
                     for (col, _) in rowBlock.enumerated() {
                         //clear current ship status if it was there
                         if blockState[row][col].shipType == shipType {
-                            blockState[row][col].bgColor = Color(red: 0.0, green: 191.0/255.0, blue: 1.0)
+                            blockState[row][col].bgColor = Color(red: 0.0, green: 191.0/255.0, blue: 0.9).opacity(1)
                             blockState[row][col].shipType = nil
                         }
                         

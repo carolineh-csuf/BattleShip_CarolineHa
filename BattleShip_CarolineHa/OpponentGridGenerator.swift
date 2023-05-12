@@ -82,6 +82,7 @@ class BattleshipGame {
     
     func printGrid() -> [[String]] {
         var result: [[String]] = []
+        print("-----Opponnent Random Grid-----")
         for row in grid {
             var temp: [String] = []
             for cell in row {

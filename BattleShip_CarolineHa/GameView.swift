@@ -211,13 +211,15 @@ struct GameView: View {
                     .onAppear {
                         isIntheGame = true
                         preparePlayerboard(cellStatus: &blockTextStruct)
+                        print("--------My Fleet Coordinate--------")
                         for (key, value) in shipsCoordinate {
                             print("\(key): \(value)", terminator: " ")
                             print()
                         }
+                        print("-----------------------------------")
                     }
                     .onChange(of: playerHitCount) { newValue in
-                        print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
+               //         print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
                         checkVictory()
                     }
                     .alert("You sunk my \(sunkShipAlertText)", isPresented: $showSunkShipAlert) {
@@ -233,7 +235,7 @@ struct GameView: View {
         .onAppear {
             // Shuffle the players array
             players.shuffle()
-            print("Game Started: \(currentPlayerIndex)")
+         //   print("Game Started: \(currentPlayerIndex)")
             currentPlayer = players[currentPlayerIndex]
             
             prepareOpponentAttack(gridSize: gridSize)
@@ -365,7 +367,7 @@ struct GameView: View {
                         
                     } else {
                         blockTextStruct[element.x][element.y].cellText = "X"
-                        blockTextStruct[element.x][element.y].bgColor = .white
+                        blockTextStruct[element.x][element.y].bgColor = .gray
                         playerResponse = "Miss 😢"
                     }
                 }
@@ -395,7 +397,7 @@ struct GameView: View {
     }
     
     func checkShipStatus(shipType: CellStatus.ShipType!) {
-        print("check ship Type : \(String(describing: shipType))")
+    //    print("check ship Type : \(String(describing: shipType))")
         playerHitCount += 1
         
         switch shipType {
