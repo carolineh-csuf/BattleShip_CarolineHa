@@ -52,7 +52,7 @@ struct OpponentCellView: View {
                         return
                     }
                     
-                    message = "Attacking Opponent at  \(Character(UnicodeScalar(selectedOpponentRow + 65)!))\(selectedOpponentCol + 1)."
+                    message = "You attacked Opponent at  \(Character(UnicodeScalar(selectedOpponentRow + 65)!))\(selectedOpponentCol + 1)."
                     // print("Attracking Opponent at Row: \(selectedOpponentRow), Col: \(selectedOpponentCol)")
                     
                     for (_, rowBlock) in blockState.enumerated() {
@@ -61,20 +61,20 @@ struct OpponentCellView: View {
                                 blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .pink
                                 blockState[selectedOpponentRow][selectedOpponentCol].cellText = "O"
                                 
-                                opponentResponse =  "--------Hit ✌️"
+                                opponentResponse =  "Hit ✌️"
                                 
                             } else {
                                 blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .gray
                                 blockState[selectedOpponentRow][selectedOpponentCol].cellText = "X"
                                 
-                                opponentResponse = "--------Miss 😢"
+                                opponentResponse = "Miss 😢"
                             }
                         }
                     }
                     
                     //update message
-                    message = message + opponentResponse
-                    
+                    message = message + "--------" + opponentResponse
+            
                     //update hitCount
                     if  blockState[selectedOpponentRow][selectedOpponentCol].cellHiddenText == "X" {
                         opponentHitCount += 1
@@ -85,10 +85,10 @@ struct OpponentCellView: View {
                   //  print("Give turn to player: \(currentPlayer)")
                 }
             }
-            .alert("You already attack this area.", isPresented: $isAttacked){
+            .alert("You had attacked this area.", isPresented: $isAttacked){
                 Button("OK") { isAttacked = false}
             }
-            .alert("Please waiting for attack.", isPresented: $showInvalidTapAlert) {
+            .alert("Please waiting for your turn.", isPresented: $showInvalidTapAlert) {
                 Button("OK") {
                     showInvalidTapAlert = false
                 }

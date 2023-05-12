@@ -62,7 +62,7 @@ struct GameView: View {
     @State var isWaitingForAttack: Bool = false
     @State var opponentHitCount: Int = 0  // number of hit opponent received
     
-    @State private var playerHitCount: Int = 16 //number of hit player received
+    @State private var playerHitCount: Int = 0 //number of hit player received
     @State private var hitCountforCarrier: Int = 0
     @State private var hitCountforBattleShip: Int = 0
     @State private var hitCountforCruiser: Int = 0
@@ -98,7 +98,7 @@ struct GameView: View {
                     
                     Text("\(message)")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .minimumScaleFactor(0.5)
+                        .minimumScaleFactor(0.6)
                         .font(.title)
                         .lineLimit(2)
                         .padding(5)
@@ -350,7 +350,7 @@ struct GameView: View {
     
     func receiveOpponentAttack() {
         if let element = opponentAttackCoordinates.popFirst() {
-            message = "Opponent attack you at: \(Character(UnicodeScalar(element.x + 65)!))\(element.y + 1)."
+            message = "Opponent attacked you at: \(Character(UnicodeScalar(element.x + 65)!))\(element.y + 1)."
             
             //  print("Element:", element)
             
@@ -386,7 +386,7 @@ struct GameView: View {
             }
             
             if playerResponse != "" {
-                message = message + " --------- " + playerResponse
+                message = message + "--------" + playerResponse
             }
             
         }
