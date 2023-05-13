@@ -74,6 +74,10 @@ struct GameView: View {
     @State private var showWinnerAlert: Bool = false
     @State private var showWinnerAlertText: String = ""
     
+    @State private var scale: CGFloat = 1.0
+    @State private var rotation: Angle = .degrees(0)
+    
+    
     var body: some View {
         
         NavigationView {
@@ -82,6 +86,15 @@ struct GameView: View {
                     Text(currentPlayer == "Player" ? "Your turn" : "Waiting for Attack")
                         .foregroundColor(.blue)
                         .fontWeight(.heavy)
+//                        .scaleEffect(scale)
+//                       // .opacity(opacity)
+//                        .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true))
+//                        .onAppear {
+//                            if currentPlayer == "Player" {
+//                                self.scale = 1.2
+//                                // self.opacity = 0.5
+//                            }
+//                        }
                         .onChange(of: currentPlayer) {newValue in
                             if newValue == "Opponent" {
                                 isWaitingForAttack = true
@@ -94,15 +107,6 @@ struct GameView: View {
                                 }
                             }
                         }
-                    // .animation(Animation.easeInOut(duration: 1.0).repeatForever())
-                    
-                    Text("\(message)")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .minimumScaleFactor(0.6)
-                        .font(.title)
-                        .lineLimit(2)
-                        .padding(5)
-                    
                 }
                 .offset(y: 40)
                 
@@ -166,6 +170,17 @@ struct GameView: View {
                                 })
                             )
                         }
+               
+                Section {
+                    Text("\(message)")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .minimumScaleFactor(0.6)
+                        .font(.title)
+                        .lineLimit(2)
+                        .padding(5)
+                }
+                .offset(y: -25)
+                
                 
                 Section {
                     Section {
@@ -211,9 +226,16 @@ struct GameView: View {
                     .onAppear {
                         isIntheGame = true
                         preparePlayerboard(cellStatus: &blockTextStruct)
+                        print()
                         print("--------My Fleet Coordinate--------")
                         for (key, value) in shipsCoordinate {
-                            print("\(key): \(value)", terminator: " ")
+                            var temp: [(Character, Int)] = []
+                            for (_, tuple) in value.enumerated() {
+                                let convertedX = Character(UnicodeScalar(tuple.0 + 65)!)
+                                let convertedY = tuple.1 + 1
+                                temp.append((convertedX,convertedY))
+                            }
+                            print("\(key): \(temp)", terminator: " ")
                             print()
                         }
                         print("-----------------------------------")

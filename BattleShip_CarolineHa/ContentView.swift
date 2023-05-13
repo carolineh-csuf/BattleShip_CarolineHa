@@ -383,7 +383,7 @@ struct ContentView: View {
                 for index in 0..<shipSize {
                     shipCoordinate.append((row, col + index))
                 }
-                print("shipCoordinate_horizontal: \(shipCoordinate)")
+           //     print("shipCoordinate_horizontal: \(shipCoordinate)")
                 
                 //checkOverlapping cells
                 for (row, rowBlock) in blockState.enumerated() {
@@ -428,7 +428,7 @@ struct ContentView: View {
                 for index in 0..<shipSize {
                     shipCoordinate.append((row + index , col))
                 }
-                print("shipCoordinate_vertical: \(shipCoordinate)")
+            //    print("shipCoordinate_vertical: \(shipCoordinate)")
                 for (row, rowBlock) in blockState.enumerated() {
                     for (col, _) in rowBlock.enumerated() {
                         //clear current ship status if it was there

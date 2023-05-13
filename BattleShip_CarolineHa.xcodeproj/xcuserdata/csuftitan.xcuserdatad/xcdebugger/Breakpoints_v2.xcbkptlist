@@ -14,8 +14,8 @@
             filePath = "BattleShip_CarolineHa/GameView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "364"
-            endingLineNumber = "364"
+            startingLineNumber = "386"
+            endingLineNumber = "386"
             landmarkName = "receiveOpponentAttack()"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "BattleShip_CarolineHa/GameView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "403"
-            endingLineNumber = "403"
+            startingLineNumber = "425"
+            endingLineNumber = "425"
             landmarkName = "checkShipStatus(shipType:)"
             landmarkType = "7">
          </BreakpointContent>

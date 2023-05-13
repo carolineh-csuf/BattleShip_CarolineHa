@@ -44,7 +44,7 @@ struct CellView: View {
                     //set seletedBlock Index
                     selectedRow = row
                     selectedCol = col
-                    print("selected Row is \(selectedRow), Col is \(selectedCol)")
+                //    print("selected Row is \(selectedRow), Col is \(selectedCol)")
                                  
                     //clear shipType
                     shipType = nil
