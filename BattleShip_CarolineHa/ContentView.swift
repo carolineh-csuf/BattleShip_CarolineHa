@@ -162,6 +162,7 @@ struct ContentView: View {
                                     Image(systemName: "train.side.front.car")
                                 }
                             }
+                            .foregroundColor(isCarriedSet ? .secondary : .white)
                             .padding()
                         }
                         .buttonStyle(BoldButtonStyle(isAnimating: isAnimating5))
@@ -196,6 +197,7 @@ struct ContentView: View {
                                 Image(systemName: "train.side.front.car")
                             }
                         }
+                        .foregroundColor(isBattleShipSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating4))
@@ -229,6 +231,7 @@ struct ContentView: View {
                                 Image(systemName: "train.side.front.car")
                             }
                         }
+                        .foregroundColor(isCruiserSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating3))
@@ -262,6 +265,7 @@ struct ContentView: View {
                                 Image(systemName: "train.side.front.car")
                             }
                         }
+                        .foregroundColor(isSubmarineSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating1))
@@ -294,6 +298,7 @@ struct ContentView: View {
                                 Image(systemName: "train.side.front.car")
                             }
                         }
+                        .foregroundColor(isDestroyerSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating2))
@@ -429,6 +434,22 @@ struct ContentView: View {
                     shipCoordinate.append((row + index , col))
                 }
             //    print("shipCoordinate_vertical: \(shipCoordinate)")
+                
+                
+                //checkOverlapping cells
+                for (row, rowBlock) in blockState.enumerated() {
+                    for (col, _) in rowBlock.enumerated() {
+                        for coordinate in shipCoordinate {
+                            if coordinate.1 == col && coordinate.0 == row &&
+                                blockState[row][col].shipType != nil && blockState[row][col].shipType != shipType {
+                                showAlert = true
+                                print("Invalid placement,Please select another coordinate.")
+                                return
+                            }
+                        }
+                    }
+                }
+                
                 for (row, rowBlock) in blockState.enumerated() {
                     for (col, _) in rowBlock.enumerated() {
                         //clear current ship status if it was there
