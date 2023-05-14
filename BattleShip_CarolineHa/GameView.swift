@@ -241,11 +241,15 @@ struct GameView: View {
                         print("-----------------------------------")
                     }
                     .onChange(of: playerHitCount) { newValue in
-               //         print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
+                        print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
                         checkVictory()
                     }
                     .alert("You sunk my \(sunkShipAlertText)", isPresented: $showSunkShipAlert) {
-                        Button("Dismiss") { showSunkShipAlert = false }
+                        Button("Dismiss") {
+                            showSunkShipAlert = false
+                            checkVictory() //check again for the last ship
+                        }
+                        
                     }
                     
                 }
@@ -275,14 +279,19 @@ struct GameView: View {
     
     private func checkVictory() {
         if opponentHitCount == 17 {
-            showWinnerAlert = true
-            showWinnerAlertText = "Congras! You Win!"
-            //opponentHitCount = 0
+            
+            if showSunkShipAlert != true {
+                showWinnerAlert = true
+                showWinnerAlertText = "Congras! You Win!"
+                //opponentHitCount = 0
+            }
         }
         
         if playerHitCount == 17 {
-            showWinnerAlert = true
-            showWinnerAlertText = "Sorry! You Lose!"
+            if showSunkShipAlert != true {
+                showWinnerAlert = true
+                showWinnerAlertText = "Sorry! You Lose!"
+            }
           //  playerHitCount = 0
         }
     }
