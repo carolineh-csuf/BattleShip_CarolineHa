@@ -68,6 +68,15 @@ struct GameView: View {
     @State private var hitCountforCruiser: Int = 0
     @State private var hitCountforSubmarine: Int = 0
     @State private var hitCountforDestroyer: Int = 0
+    
+    //for opponent
+    @State private var attackCountforCarrier: Int = 0
+    @State private var attackCountforBattleShip: Int = 0
+    @State private var attackCountforCruiser: Int = 0
+    @State private var attackCountforSubmarine: Int = 0
+    @State private var attackCountforDestroyer: Int = 0
+    @State private var showOpponentSunkShipAlert: Bool = false
+    
     @State private var showSunkShipAlert: Bool = false
     @State private var sunkShipAlertText: String = ""
     
@@ -156,6 +165,7 @@ struct GameView: View {
                 }
                 .onChange(of: opponentHitCount) { newValue in
                 //                print("opponenthitCount : \(newValue)")
+                    checkOpponentShipStatus(shipType: opponentBlocks[selectedOpponentRow][selectedOpponentCol].shipType)
                                 checkVictory()
                 }
                 .alert(isPresented: $showWinnerAlert) {
@@ -170,6 +180,13 @@ struct GameView: View {
                                 })
                             )
                         }
+                .alert("Opponent \(sunkShipAlertText) sunk", isPresented: $showOpponentSunkShipAlert) {
+                    Button("Dismiss") {
+                        showOpponentSunkShipAlert = false
+                        checkVictory() //check again for the last ship
+                    }
+                    
+                }
                
                 Section {
                     Text("\(message)")
@@ -280,7 +297,7 @@ struct GameView: View {
     private func checkVictory() {
         if opponentHitCount == 17 {
             
-            if showSunkShipAlert != true {
+            if showOpponentSunkShipAlert != true {
                 showWinnerAlert = true
                 showWinnerAlertText = "Congras! You Win!"
                 //opponentHitCount = 0
@@ -333,8 +350,17 @@ struct GameView: View {
             opponentBlocks.append(row)
         }
         
-        let randomGrid = opponentBoardGenerator()
+        let generator = opponentBoardGenerator()
+        let randomGrid = generator.0
      //   print("Opponent Board Init, randomGrid is \(randomGrid)")
+        let shipscoordinate = generator.1
+        
+        for (key, value) in shipscoordinate {
+            for tuple in value {
+                opponentBlocks[tuple.0][tuple.1].shipType = key
+                print("opponent Blocks \([tuple.0]) \([tuple.1]) is \(opponentBlocks[tuple.0][tuple.1].shipType)")
+            }
+        }
         
         for (rowIndex, row) in randomGrid.enumerated() {
             for (colIndex, element) in row.enumerated() {
@@ -348,7 +374,7 @@ struct GameView: View {
     }
     
     
-    func opponentBoardGenerator() -> [[String]] {
+    func opponentBoardGenerator() -> ([[String]],[CellStatus.ShipType: [(Int,Int)]]) {
         let game = BattleshipGame()
         game.generateRandomGrid()
         let result = game.printGrid()
@@ -474,6 +500,57 @@ struct GameView: View {
             showSunkShipAlert = true
             sunkShipAlertText = "Destroyer"
             hitCountforDestroyer = 0
+        }
+        
+      //  checkVictory()
+        
+    }
+    
+    func checkOpponentShipStatus(shipType: CellStatus.ShipType!) {
+        
+        switch shipType {
+        case .carrier:
+            attackCountforCarrier += 1
+        case .battleShip:
+            attackCountforBattleShip += 1
+        case .cruiser:
+            attackCountforCruiser += 1
+        case .submarine:
+            attackCountforSubmarine += 1
+        case .Destoyer:
+            attackCountforDestroyer += 1
+        case .none:
+            break
+        }
+        
+        if attackCountforCarrier == 5 {
+            showOpponentSunkShipAlert = true
+            sunkShipAlertText = "AirCraft Carrier"
+            attackCountforCarrier = 0
+        }
+        
+        if attackCountforBattleShip == 4 {
+            showOpponentSunkShipAlert = true
+            sunkShipAlertText = "BattleShip"
+            attackCountforBattleShip = 0
+        }
+        
+        if attackCountforSubmarine == 3 {
+            showOpponentSunkShipAlert = true
+            sunkShipAlertText = "Submarine"
+            attackCountforSubmarine = 0
+        }
+        
+        if attackCountforCruiser == 3 {
+            showOpponentSunkShipAlert = true
+            sunkShipAlertText = "Cruiser"
+            attackCountforCruiser = 0
+        }
+        
+        if attackCountforDestroyer == 2 {
+            showOpponentSunkShipAlert = true
+            sunkShipAlertText = "Destroyer"
+            attackCountforDestroyer = 0
         }
         
       //  checkVictory()

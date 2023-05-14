@@ -11,6 +11,13 @@ class BattleshipGame {
     let gridSize = 10
     let shipLengths = [5, 4, 3, 3, 2]
     
+    var shipCoordinates:[CellStatus.ShipType : [(Int,Int)]] = [:]
+    {
+        didSet{
+       //     print("shipCoordinate: \(shipCoordinates)")
+        }
+    }
+
     private var grid = [[String]]()
     
     init() {
@@ -48,14 +55,39 @@ class BattleshipGame {
     }
     
     private func placeShip(_ row: Int, _ col: Int, _ length: Int, _ direction: Bool) {
+       // var shipCoordinates:[String : [(Int,Int)]] = [:]
+        var coordinate : [(Int,Int)] = []
         if direction {
             for i in col..<col+length {
                 grid[row][i] = "X"
+            //    print("ship: length \(length): \(row) \(i)")
+                coordinate.append((row,i))
             }
         } else {
             for i in row..<row+length {
                 grid[i][col] = "X"
+            //    print("ship: length \(length): \(i) \(col)")
+                coordinate.append((i,col))
             }
+        }
+        
+        if length == 5 {
+            shipCoordinates.updateValue(coordinate, forKey: .carrier)
+        } else if length == 4 {
+            shipCoordinates.updateValue(coordinate, forKey: .battleShip)
+        } else if length == 3 {
+            if shipCoordinates.keys.contains(.submarine) {
+                shipCoordinates.updateValue(coordinate, forKey: .cruiser)
+            } else if shipCoordinates.keys.contains(.cruiser) {
+                shipCoordinates.updateValue(coordinate, forKey: .submarine)
+            } else {
+                shipCoordinates.updateValue(coordinate, forKey: .cruiser)
+            }
+        } else if length == 2 {
+            shipCoordinates.updateValue(coordinate, forKey: .Destoyer)
+        }
+        for coordinate in shipCoordinates {
+           // print("ShipsCoordinate is \(coordinate)")
         }
     }
     
@@ -80,7 +112,7 @@ class BattleshipGame {
         }
     }
     
-    func printGrid() -> [[String]] {
+    func printGrid() -> ([[String]],[CellStatus.ShipType : [(Int,Int)]]) {
         var result: [[String]] = []
         print("-----Opponnent Random Grid-----")
         for row in grid {
@@ -92,7 +124,8 @@ class BattleshipGame {
             print()
             result.append(temp)
         }
-        return result
+        
+        return (result, shipCoordinates)
     }
 }
 

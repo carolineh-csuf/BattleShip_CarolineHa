@@ -26,14 +26,26 @@ struct OpponentCellView: View {
     
     @State private var opponentResponse: String = ""
     
+    //for opponent
+//    @State private var attackCountforCarrier: Int = 0
+//    @State private var attackCountforBattleShip: Int = 0
+//    @State private var attackCountforCruiser: Int = 0
+//    @State private var attackCountforSubmarine: Int = 0
+//    @State private var attackCountforDestroyer: Int = 0
+//    @State private var showOpponentSunkShipAlert: Bool = false
+//    @State private var sunkShipAlertText: String = ""
+    
+    
     var body: some View {
         Text(blockState[row][col].cellText)
             .frame(width: getButtonSize(), height: getButtonSize())
             .background(blockState[row][col].bgColor)
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
-        //            .onChange(of: opponentHitCount) { newValue in
-        //                print("hitCount : \(opponentHitCount)")
-        //            }
+                    .onChange(of: opponentHitCount) { newValue in
+                        print("Opponent HitCount : \(opponentHitCount)")
+                        print("Hit block type is: \(blockState[row][col].shipType)")
+//                       // checkOpponentShipStatus(shipType: blockState[row][col].shipType)
+                    }
             .onTapGesture {
                 // print("hitCount is \(hitCount)")
                 withAnimation {
@@ -78,6 +90,8 @@ struct OpponentCellView: View {
                     //update hitCount
                     if  blockState[selectedOpponentRow][selectedOpponentCol].cellHiddenText == "X" {
                         opponentHitCount += 1
+                    
+                       // checkOpponentShipStatus(shipType: blockState[selectedOpponentRow][selectedOpponentCol].shipType)
                     }
                     
                     //give turn to Opponent
@@ -93,6 +107,13 @@ struct OpponentCellView: View {
                     showInvalidTapAlert = false
                 }
             }
+//            .alert("Opponent \(sunkShipAlertText) sunk", isPresented: $showOpponentSunkShipAlert) {
+//                Button("Dismiss") {
+//                    showOpponentSunkShipAlert = false
+//                  //  checkVictory() //check again for the last ship
+//                }
+//
+//            }
     }
     
     private func getButtonSize() -> CGFloat {
@@ -102,6 +123,58 @@ struct OpponentCellView: View {
         //  print("buttonSize = \(size)")
         return CGFloat(size)
     }
+    
+//    func checkOpponentShipStatus(shipType: CellStatus.ShipType!) {
+//
+//        switch shipType {
+//        case .carrier:
+//            attackCountforCarrier += 1
+//        case .battleShip:
+//            attackCountforBattleShip += 1
+//        case .cruiser:
+//            attackCountforCruiser += 1
+//        case .submarine:
+//            attackCountforSubmarine += 1
+//        case .Destoyer:
+//            attackCountforDestroyer += 1
+//        case .none:
+//            break
+//        }
+//
+//        if attackCountforCarrier == 5 {
+//            showOpponentSunkShipAlert = true
+//            sunkShipAlertText = "AirCraft Carrier"
+//            attackCountforCarrier = 0
+//        }
+//
+//        if attackCountforBattleShip == 4 {
+//            showOpponentSunkShipAlert = true
+//            sunkShipAlertText = "BattleShip"
+//            attackCountforBattleShip = 0
+//        }
+//
+//        if attackCountforSubmarine == 3 {
+//            showOpponentSunkShipAlert = true
+//            sunkShipAlertText = "Submarine"
+//            attackCountforSubmarine = 0
+//        }
+//
+//        if attackCountforCruiser == 3 {
+//            showOpponentSunkShipAlert = true
+//            sunkShipAlertText = "Cruiser"
+//            attackCountforCruiser = 0
+//        }
+//
+//        if attackCountforDestroyer == 2 {
+//            showOpponentSunkShipAlert = true
+//            sunkShipAlertText = "Destroyer"
+//            attackCountforDestroyer = 0
+//        }
+//
+//      //  checkVictory()
+//
+//    }
+    
 }
 
 //struct OpponentCellView_Previews: PreviewProvider {

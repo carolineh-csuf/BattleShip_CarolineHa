@@ -14,8 +14,8 @@
             filePath = "BattleShip_CarolineHa/GameView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "395"
-            endingLineNumber = "395"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
             landmarkName = "receiveOpponentAttack()"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "BattleShip_CarolineHa/GameView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "434"
-            endingLineNumber = "434"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "checkShipStatus(shipType:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -39,16 +39,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2BE2523B-C1C1-432E-93FC-89929EC4378D"
+            uuid = "8FAF62EF-BAFD-45CC-82A0-22D62058B9E4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BattleShip_CarolineHa/OpponentGridGenerator.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "placeShip(_:_:_:_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "884B42C2-43B4-4F22-89E3-B192B898B0D6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BattleShip_CarolineHa/ContentView.swift"
+            filePath = "BattleShip_CarolineHa/GameView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "461"
-            endingLineNumber = "461"
-            landmarkName = "checkShipSetUp(shipType:)"
+            startingLineNumber = "511"
+            endingLineNumber = "511"
+            landmarkName = "checkOpponentShipStatus(shipType:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
