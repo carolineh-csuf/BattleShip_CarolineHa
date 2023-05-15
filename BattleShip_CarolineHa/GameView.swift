@@ -244,7 +244,7 @@ struct GameView: View {
                         isIntheGame = true
                         preparePlayerboard(cellStatus: &blockTextStruct)
                         print()
-                        print("--------My Fleet Coordinate--------")
+                      //  print("--------My Fleet Coordinate--------")
                         for (key, value) in shipsCoordinate {
                             var temp: [(Character, Int)] = []
                             for (_, tuple) in value.enumerated() {
@@ -252,10 +252,10 @@ struct GameView: View {
                                 let convertedY = tuple.1 + 1
                                 temp.append((convertedX,convertedY))
                             }
-                            print("\(key): \(temp)", terminator: " ")
+                        //    print("\(key): \(temp)", terminator: " ")
                             print()
                         }
-                        print("-----------------------------------")
+                       // print("-----------------------------------")
                     }
                     .onChange(of: playerHitCount) { newValue in
                         print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
@@ -358,7 +358,7 @@ struct GameView: View {
         for (key, value) in shipscoordinate {
             for tuple in value {
                 opponentBlocks[tuple.0][tuple.1].shipType = key
-                print("opponent Blocks \([tuple.0]) \([tuple.1]) is \(opponentBlocks[tuple.0][tuple.1].shipType)")
+           //     print("opponent Blocks \([tuple.0]) \([tuple.1]) is \(opponentBlocks[tuple.0][tuple.1].shipType)")
             }
         }
         

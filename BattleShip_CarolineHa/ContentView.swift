@@ -49,55 +49,54 @@ struct ContentView: View {
         
         NavigationView {
             VStack {
-            //    NavigationLink(destination: GameView()) {
-                    
-                    ZStack {
-                        VStack(spacing:0) {
-                            HStack(spacing:0) {
-                                ForEach(Array(columnText.enumerated()), id: \.offset) { (columnIndex, value) in
-                                    CoordinateView(text:value)
-                                }
-                            }
-                            
-                            ForEach(Array(rowText.enumerated()), id: \.offset) { (rowIndex, value) in
-                                VStack(spacing:0) {
-                                    HStack(spacing: 0){
-                                        CoordinateView(text: value)
-                                        Spacer()
-                                    }
-                                }
+                
+                ZStack {
+                    VStack(spacing:0) {
+                        HStack(spacing:0) {
+                            ForEach(Array(columnText.enumerated()), id: \.offset) { (columnIndex, value) in
+                                CoordinateView(text:value)
                             }
                         }
                         
-                        VStack(spacing: 0) {
-                            ForEach(Array(blockTextStruct.enumerated()), id: \.offset) { (rowIndex, row) in
-                                //   ForEach(0..<gridSize) { row in
-                                HStack(spacing:0) {
-                                    ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
-                                        // ForEach(0..<gridSize) { column in
-                                        CellView(row: rowIndex, col: columnIndex, selectedRow: $selectedRow, selectedCol: $selectedCol, blockState: $blockTextStruct, shipType: $selectedShip, isAnimating5: $isAnimating5, isAnimating4: $isAnimating4, isAnimating3: $isAnimating3, isAnimating2: $isAnimating2, isAnimating1: $isAnimating1, isIntheGame: $isIntheGame)
-                                    }
+                        ForEach(Array(rowText.enumerated()), id: \.offset) { (rowIndex, value) in
+                            VStack(spacing:0) {
+                                HStack(spacing: 0){
+                                    CoordinateView(text: value)
+                                    Spacer()
                                 }
                             }
                         }
-                        .offset(x: getButtonSize()/2 ,y: getButtonSize()/2)
-                        .onAppear {
-                            initializeBlockTextStruct()
-                        }
-                        .alert("Overlapped, Invalid Placement", isPresented: $showAlert) {
-                            Button("OK") {
-                                showAlert = false
-                                print("showAlert: \(showAlert)")
-                            }
-                        }
-                        .alert("Out of Grid! Try another cell or toggle direction for fit.", isPresented: $showOutofGridAlert) {
-                            Button("OK") {
-                                showOutofGridAlert = false
+                    }
+                    
+                    VStack(spacing: 0) {
+                        ForEach(Array(blockTextStruct.enumerated()), id: \.offset) { (rowIndex, row) in
+                            //   ForEach(0..<gridSize) { row in
+                            HStack(spacing:0) {
+                                ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
+                                    // ForEach(0..<gridSize) { column in
+                                    CellView(row: rowIndex, col: columnIndex, selectedRow: $selectedRow, selectedCol: $selectedCol, blockState: $blockTextStruct, shipType: $selectedShip, isAnimating5: $isAnimating5, isAnimating4: $isAnimating4, isAnimating3: $isAnimating3, isAnimating2: $isAnimating2, isAnimating1: $isAnimating1, isIntheGame: $isIntheGame)
+                                }
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .offset(y: 20)
+                    .offset(x: getButtonSize()/2 ,y: getButtonSize()/2)
+                    .onAppear {
+                        initializeBlockTextStruct()
+                    }
+                    .alert("Overlapped, Invalid Placement", isPresented: $showAlert) {
+                        Button("Dismiss") {
+                            showAlert = false
+                   //         print("showAlert: \(showAlert)")
+                        }
+                    }
+                    .alert("Out of Grid! Try another cell or toggle direction for fit.", isPresented: $showOutofGridAlert) {
+                        Button("OK") {
+                            showOutofGridAlert = false
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .offset(y: 20)
                 
                 Divider()
                     .offset(y: 20)
@@ -107,28 +106,28 @@ struct ContentView: View {
                         .font(.headline)
                         .padding()
                     
-                        Toggle(isOn: $isHorizontal) {
-                            
-                            Text(isHorizontal ? "Direction: Horizontal" : "Direction: Vertical")
-                                .frame(maxWidth: .infinity)
-                                .font(.headline)
-                                .lineLimit(1)
-                                .padding(.leading, 50)
-                            
-                            Spacer()
-                        }
-                            .toggleStyle(SwitchToggleStyle(tint: .blue))
-                            .padding(.trailing)
-                            .onChange(of: isHorizontal) { newValue in
-                                selectedShipDirection = newValue ? .horizontal : .vertical
-                                // Handle toggle state change
-                                print("Toggle Horizontal direction to: \(newValue)")
-                                print("selectedShipDirection: \(selectedShipDirection)")
-                                getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: selectedShipDirection, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
-                            }
-                            .disabled(selectedShip == nil || selectedShipSize == 1)
+                    Toggle(isOn: $isHorizontal) {
+                        
+                        Text(isHorizontal ? "Direction: Horizontal" : "Direction: Vertical")
+                            .frame(maxWidth: .infinity)
+                            .font(.headline)
+                            .lineLimit(1)
+                            .padding(.leading, 50)
+                        
+                        Spacer()
+                    }
+                    .toggleStyle(SwitchToggleStyle(tint: .blue))
+                    .padding(.trailing)
+                    .onChange(of: isHorizontal) { newValue in
+                        selectedShipDirection = newValue ? .horizontal : .vertical
+                        // Handle toggle state change
+                        print("Toggle Horizontal direction to: \(newValue)")
+                        print("selectedShipDirection: \(selectedShipDirection)")
+                        getShipCoordinate(selectedShip, shipSize: selectedShipSize, shipDirection: selectedShipDirection, row: selectedRow, col: selectedCol, blockState: &blockTextStruct)
+                    }
+                    .disabled(selectedShip == nil || selectedShipSize == 1)
                     .opacity(selectedShip == nil || selectedShipSize == 1 ? 0.2 : 1.0)
-                    .offset(y: 5)
+                    .offset(y: 10)
                     
                 }
                 VStack (alignment: .leading, spacing: 0) {
@@ -142,6 +141,7 @@ struct ContentView: View {
                                 isAnimating1 = false
                                 
                                 if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                    highLightSelectedShip()
                                     showAlert = true
                                     return
                                 }
@@ -155,18 +155,20 @@ struct ContentView: View {
                             HStack{
                                 Text("AirCraft Carrier")
                                 HStack(spacing:0){
-                                    Image(systemName: "train.side.rear.car")
-                                    Image(systemName: "train.side.middle.car")
-                                    Image(systemName: "train.side.middle.car")
-                                    Image(systemName: "train.side.middle.car")
                                     Image(systemName: "train.side.front.car")
+                                        .rotationEffect(.degrees(180))
+                                    Image(systemName: "train.side.middle.car")
+                                    Image(systemName: "train.side.middle.car")
+                                    Image(systemName: "train.side.middle.car")
+                                    Image(systemName: "train.side.rear.car")
+                                        .rotationEffect(.degrees(180))
                                 }
                             }
                             .foregroundColor(isCarriedSet ? .secondary : .white)
                             .padding()
                         }
                         .buttonStyle(BoldButtonStyle(isAnimating: isAnimating5))
-                       // .padding(.trailing)
+                        // .padding(.trailing)
                     }
                     
                     Button(action: {
@@ -178,6 +180,7 @@ struct ContentView: View {
                             isAnimating1 = false
                             
                             if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                highLightSelectedShip()
                                 showAlert = true
                                 return
                             }
@@ -191,17 +194,19 @@ struct ContentView: View {
                         HStack {
                             Text("BattleShip")
                             HStack(spacing:0){
-                                Image(systemName: "train.side.rear.car")
-                                Image(systemName: "train.side.middle.car")
-                                Image(systemName: "train.side.middle.car")
                                 Image(systemName: "train.side.front.car")
+                                    .rotationEffect(.degrees(180))
+                                Image(systemName: "train.side.middle.car")
+                                Image(systemName: "train.side.middle.car")
+                                Image(systemName: "train.side.rear.car")
+                                    .rotationEffect(.degrees(180))
                             }
                         }
                         .foregroundColor(isBattleShipSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating4))
-                   // .padding(.trailing)
+                    // .padding(.trailing)
                     .offset(x: 5)
                     
                     Button(action: {
@@ -213,6 +218,7 @@ struct ContentView: View {
                             isAnimating1 = false
                             
                             if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                highLightSelectedShip()
                                 showAlert = true
                                 return
                             }
@@ -226,16 +232,18 @@ struct ContentView: View {
                         HStack {
                             Text("Cruiser")
                             HStack(spacing: 0){
-                                Image(systemName: "train.side.rear.car")
-                                Image(systemName: "train.side.middle.car")
                                 Image(systemName: "train.side.front.car")
+                                    .rotationEffect(.degrees(180))
+                                Image(systemName: "train.side.middle.car")
+                                Image(systemName: "train.side.rear.car")
+                                    .rotationEffect(.degrees(180))
                             }
                         }
                         .foregroundColor(isCruiserSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating3))
-                   // .padding(.trailing)
+                    // .padding(.trailing)
                     .offset(x: 10)
                     
                     Button(action: {
@@ -247,6 +255,7 @@ struct ContentView: View {
                             isAnimating2 = false
                             
                             if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                highLightSelectedShip()
                                 showAlert = true
                                 return
                             }
@@ -260,16 +269,18 @@ struct ContentView: View {
                         HStack {
                             Text("Submarine")
                             HStack(spacing:0){
-                                Image(systemName: "train.side.rear.car")
-                                Image(systemName: "train.side.middle.car")
                                 Image(systemName: "train.side.front.car")
+                                    .rotationEffect(.degrees(180))
+                                Image(systemName: "train.side.middle.car")
+                                Image(systemName: "train.side.rear.car")
+                                    .rotationEffect(.degrees(180))
                             }
                         }
                         .foregroundColor(isSubmarineSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating1))
-                  //  .padding(.trailing)
+                    //  .padding(.trailing)
                     .offset(x: 7)
                     
                     Button(action: {
@@ -280,7 +291,9 @@ struct ContentView: View {
                             isAnimating3 = false
                             isAnimating1 = false
                             
+                            
                             if blockTextStruct[selectedRow][selectedCol].shipType != nil {
+                                highLightSelectedShip()
                                 showAlert = true
                                 return
                             }
@@ -294,20 +307,22 @@ struct ContentView: View {
                         HStack {
                             Text("Destroyer")
                             HStack(spacing:0){
-                                Image(systemName: "train.side.rear.car")
                                 Image(systemName: "train.side.front.car")
+                                    .rotationEffect(.degrees(180))
+                                Image(systemName: "train.side.rear.car")
+                                    .rotationEffect(.degrees(180))
                             }
                         }
                         .foregroundColor(isDestroyerSet ? .secondary : .white)
                         .padding()
                     }
                     .buttonStyle(BoldButtonStyle(isAnimating: isAnimating2))
-                  //  .padding(.trailing)
+                    //  .padding(.trailing)
                     .offset(x: 10)
                 }
-                    
-                    
-               // Spacer()
+                
+                
+                // Spacer()
                 HStack {
                     Button(action: {
                         initializeBlockTextStruct()
@@ -319,21 +334,21 @@ struct ContentView: View {
                     }
                     .padding()
                     Spacer()
-
+                    
                     NavigationLink(destination:GameView(blockTextStruct: $blockTextStruct, shipsCoordinate: $shipsCoordinate).navigationBarBackButtonHidden(true)
                         .navigationBarItems(leading: MyBackButton(label: "Restart"))) {
-                        Text("Start Game")
-                            .padding()
-                    }
-                    .disabled(!(isCarriedSet && isBattleShipSet && isCruiserSet && isSubmarineSet && isDestroyerSet))
+                            Text("Start Game")
+                                .padding()
+                        }
+                        .disabled(!(isCarriedSet && isBattleShipSet && isCruiserSet && isSubmarineSet && isDestroyerSet))
                 }
                 
             }
-           .navigationTitle("BattleShip")
-           .navigationBarTitleDisplayMode(.inline)
-           .onAppear {
-               reset()
-           }
+            .navigationTitle("BattleShip")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                reset()
+            }
         }
         
     }
@@ -388,7 +403,7 @@ struct ContentView: View {
                 for index in 0..<shipSize {
                     shipCoordinate.append((row, col + index))
                 }
-           //     print("shipCoordinate_horizontal: \(shipCoordinate)")
+                //     print("shipCoordinate_horizontal: \(shipCoordinate)")
                 
                 //checkOverlapping cells
                 for (row, rowBlock) in blockState.enumerated() {
@@ -433,7 +448,7 @@ struct ContentView: View {
                 for index in 0..<shipSize {
                     shipCoordinate.append((row + index , col))
                 }
-            //    print("shipCoordinate_vertical: \(shipCoordinate)")
+                //    print("shipCoordinate_vertical: \(shipCoordinate)")
                 
                 
                 //checkOverlapping cells
@@ -493,43 +508,71 @@ struct ContentView: View {
         }
     }
     
-}
-
-struct BoldButtonStyle: ButtonStyle {
-    var isAnimating: Bool
-    //var isSelectedShip: Bool
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundColor(.white)
-        //  .padding()
-            .background(isAnimating ? .green : .blue)
-            .cornerRadius(10)
-            .scaleEffect(isAnimating ? 1.0 : 0.8)
-           // .animation(.spring())
+    func highLightSelectedShip() {
+        //print("selected ship: \(isAnimating5), \(isAnimating4), \(isAnimating3), \(isAnimating2), \(isAnimating1)")
+         for (row, rowBlock) in blockTextStruct.enumerated() {
+            for (col, _) in rowBlock.enumerated() {
+                
+                switch blockTextStruct[row][col].shipType {
+                case .carrier:
+                        if isAnimating5 {
+                            blockTextStruct[row][col].bgColor = .yellow
+                        } else {
+                            blockTextStruct[row][col].bgColor = .indigo
+                        }
+                case .battleShip:
+                    if isAnimating4 {
+                            blockTextStruct[row][col].bgColor = .yellow
+                        } else {
+                            blockTextStruct[row][col].bgColor = .indigo
+                        }
+                case .cruiser:
+                    if isAnimating3 {
+                        blockTextStruct[row][col].bgColor = .yellow
+                    } else {
+                        blockTextStruct[row][col].bgColor = .indigo
+                    }
+                case .Destoyer:
+                    if isAnimating2 {
+                        blockTextStruct[row][col].bgColor = .yellow
+                    } else {
+                        blockTextStruct[row][col].bgColor = .indigo
+                    }
+                case .submarine:
+                    if isAnimating1 {
+                        blockTextStruct[row][col].bgColor = .yellow
+                    } else {
+                        blockTextStruct[row][col].bgColor = .indigo
+                    }
+                
+                case .none:
+                    continue
+                }
+                    
+                }
+            }
     }
+    
+    struct BoldButtonStyle: ButtonStyle {
+        var isAnimating: Bool
+        //var isSelectedShip: Bool
+        
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .font(.headline)
+                .foregroundColor(.white)
+            //  .padding()
+                .background(isAnimating ? .green : .blue)
+                .cornerRadius(10)
+                .scaleEffect(isAnimating ? 1.0 : 0.8)
+            // .animation(.spring())
+        }
+        
+    }
+    
+    //struct ContentView_Previews: PreviewProvider {
+    //    static var previews: some View {
+    //      ContentView()
+    //    }
+    //}
 }
-
-//struct MyBackButton: View {
-//    let label: String
-//    @Environment(\.presentationMode) var presentationMode
-//
-//    var body: some View {
-//        Button(action: {
-//            self.presentationMode.wrappedValue.dismiss()
-//
-//        }) {
-//            HStack {
-//                Image(systemName: "restart.circle.fill")
-//                Text(label)
-//            }
-//        }
-//    }
-//}
-
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//      ContentView()
-//    }
-//}

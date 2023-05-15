@@ -41,11 +41,10 @@ struct OpponentCellView: View {
             .frame(width: getButtonSize(), height: getButtonSize())
             .background(blockState[row][col].bgColor)
             .border(blockState[row][col].isSelected ? .yellow : .black, width: blockState[row][col].isSelected ? 3 : 0.5)
-                    .onChange(of: opponentHitCount) { newValue in
-                        print("Opponent HitCount : \(opponentHitCount)")
-                        print("Hit block type is: \(blockState[row][col].shipType)")
-//                       // checkOpponentShipStatus(shipType: blockState[row][col].shipType)
-                    }
+//                    .onChange(of: opponentHitCount) { newValue in
+//                        print("Opponent HitCount : \(opponentHitCount)")
+//                        print("Hit block type is: \(blockState[row][col].shipType)")
+//                    }
             .onTapGesture {
                 // print("hitCount is \(hitCount)")
                 withAnimation {
