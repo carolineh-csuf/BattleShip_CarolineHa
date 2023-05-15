@@ -85,7 +85,8 @@ struct GameView: View {
     
     @State private var scale: CGFloat = 1.0
     @State private var rotation: Angle = .degrees(0)
-    
+    @State private var numberOfPlayerMissed: Int = 0
+    @State private var numberOfOpponentMissed: Int = 0
     
     var body: some View {
         
@@ -122,7 +123,7 @@ struct GameView: View {
                 
                 VStack {
                     Section {
-                        Text("Opponent")
+                        Text("Opponent: Hit: \(opponentHitCount)  Missed:\(numberOfPlayerMissed) ")
                     }
                     .offset(y:55)
                     
@@ -148,7 +149,7 @@ struct GameView: View {
                             ForEach(Array(opponentBlocks.enumerated()), id: \.offset) { (rowIndex, row) in
                                 HStack(spacing:0) {
                                     ForEach(Array(row.enumerated()), id: \.offset) { (columnIndex, value) in
-                                        OpponentCellView(row: rowIndex, col: columnIndex, selectedOpponentRow: $selectedOpponentRow, selectedOpponentCol: $selectedOpponentCol, blockState: $opponentBlocks, shipType: $selectedShip, currentPlayer: $currentPlayer, message: $message, isWaitingForAttack: $isWaitingForAttack, opponentHitCount: $opponentHitCount)
+                                        OpponentCellView(row: rowIndex, col: columnIndex, selectedOpponentRow: $selectedOpponentRow, selectedOpponentCol: $selectedOpponentCol, blockState: $opponentBlocks, shipType: $selectedShip, currentPlayer: $currentPlayer, message: $message, isWaitingForAttack: $isWaitingForAttack, opponentHitCount: $opponentHitCount, numberOfPlayerMiss: $numberOfPlayerMissed)
                                     }
                                 }
                             }
@@ -177,6 +178,7 @@ struct GameView: View {
                                     playerHitCount = 0
                                     opponentHitCount = 0
                                     presentationMode.wrappedValue.dismiss()
+                                    numberOfPlayerMissed = 0
                                 })
                             )
                         }
@@ -201,7 +203,7 @@ struct GameView: View {
                 
                 Section {
                     Section {
-                        Text("Player")
+                        Text("Player: Hit: \(playerHitCount)  Missed:\(numberOfOpponentMissed)")
                     }
                     .offset(y: 30)
                     
@@ -387,6 +389,9 @@ struct GameView: View {
                 if cellStatus[row][col].isSelected == true {
                     cellStatus[row][col].isSelected = false
                 }
+                if cellStatus[row][col].shipType != nil {
+                    cellStatus[row][col].bgColor = .indigo
+                }
             }
         }
         
@@ -442,6 +447,10 @@ struct GameView: View {
                 checkShipStatus(shipType: blockTextStruct[element.x][element.y].shipType ?? nil)
                 
                // checkVictory()
+            }
+            
+            if blockTextStruct[element.x][element.y].cellText == "X" {
+                numberOfOpponentMissed += 1
             }
             
             if playerResponse != "" {

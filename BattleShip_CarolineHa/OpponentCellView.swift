@@ -20,6 +20,7 @@ struct OpponentCellView: View {
     @Binding var message: String
     @Binding var isWaitingForAttack: Bool
     @Binding var opponentHitCount: Int
+    @Binding var numberOfPlayerMiss: Int
     
     @State private var isAttacked: Bool = false
     @State private var showInvalidTapAlert: Bool = false
@@ -77,7 +78,6 @@ struct OpponentCellView: View {
                             } else {
                                 blockState[selectedOpponentRow][selectedOpponentCol].bgColor = .gray
                                 blockState[selectedOpponentRow][selectedOpponentCol].cellText = "X"
-                                
                                 opponentResponse = "Miss 😢"
                             }
                         }
@@ -91,6 +91,8 @@ struct OpponentCellView: View {
                         opponentHitCount += 1
                     
                        // checkOpponentShipStatus(shipType: blockState[selectedOpponentRow][selectedOpponentCol].shipType)
+                    } else {
+                        numberOfPlayerMiss += 1
                     }
                     
                     //give turn to Opponent
