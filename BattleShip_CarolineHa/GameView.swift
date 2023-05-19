@@ -260,7 +260,7 @@ struct GameView: View {
                        // print("-----------------------------------")
                     }
                     .onChange(of: playerHitCount) { newValue in
-                        print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
+                  //      print("playerHitCount: \(playerHitCount)  ==?  \(newValue)")
                         checkVictory()
                     }
                     .alert("You sunk my \(sunkShipAlertText)", isPresented: $showSunkShipAlert) {
